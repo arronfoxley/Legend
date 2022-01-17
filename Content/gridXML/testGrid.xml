@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Grid>
+  <Data CellsX="20" CellsY="20" CellWidth="32" CellHeight="32" />
+  <NonPassable>  
+  </NonPassable>
+</Grid>
