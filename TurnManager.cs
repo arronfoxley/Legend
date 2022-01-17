@@ -7,24 +7,30 @@ using System.Text;
 namespace Legend {
     public class TurnManager {
 
-        public List<Unit> unitsAwaitingTurn = new List<Unit>();
+        private List<Player> players = new List<Player>();
 
-        public bool PlayerTurn = true;
-        public bool EnemyTurn = false;
+        private Player activePlayer = null;
+        private Unit activeUnit = null;
 
-        public Unit activeUnit = null;
-
-        public int TurnNumber = 1;
+        private int PlayerTurnNumber = 0;
+        public int PlayerUnitTurnNumber = 0;
 
         public TurnManager()
         {
 
         }
 
-        public void AddUnitToTurnList(Unit unit)
+        public void AddPlayerToTurnList(Player player)
         {
 
-            unitsAwaitingTurn.Add(unit);
+            players.Add(player);
+
+        }
+
+        public void RemovePlayerToTurnList(Player player)
+        {
+
+            players.Remove(player);
 
         }
 
@@ -35,117 +41,118 @@ namespace Legend {
 
         }
 
+        public Player ActivePlayer
+        {
+
+            get { return this.activePlayer; }
+            set { this.activePlayer = value; }
+
+        }
+
 
         public void Update()
         {
 
-            if (CheckTurnOver())
+            //Check if active units turn is over..
+            if (activeUnit.IsTurnOver)
             {
 
-                ResetTurns();
-                activeUnit = CheckForPlayerUnit();
-
-            }
-
-            if (activeUnit.TurnStarted && !activeUnit.TurnComplete && activeUnit.step == activeUnit.totalSteps)
-            {
-               
-                activeUnit.TurnComplete = true;
-                Debug.WriteLine("Turn over");
-                //check if player unit turn list complete
-                if(CheckForPlayerUnit() != null)
+                //If it is, check for the next unit..
+                if (PlayerUnitTurnNumber < activePlayer.units.Count -1)
                 {
 
-                    activeUnit = CheckForPlayerUnit();
+                    activeUnit = activePlayer.units[PlayerUnitTurnNumber];
+                    PlayerUnitTurnNumber++;
 
                 }
                 else
                 {
 
-                    Debug.WriteLine("Enemy Turn");
-                    activeUnit = CheckForEnemyUnit();
-                    Debug.WriteLine(activeUnit);
+                    Debug.WriteLine("No more units for this player");
+
+                    if (PlayerTurnNumber < players.Count - 1)
+                    {
+
+                        PlayerUnitTurnNumber = 0;
+                        PlayerTurnNumber++;
+
+                        activePlayer = players[PlayerTurnNumber];
+                        activeUnit = activePlayer.units[PlayerUnitTurnNumber];
+
+                        Debug.WriteLine("More players left, select next player");
+
+                    }
+                    else
+                    {
+
+                        foreach (Player player in players)
+                        {
+
+                            for (int i = 0; i < player.units.Count; i++)
+                            {
+
+                                player.units[i].IsTurnOver = false;
+
+                            }
+
+                        }
+
+                        PlayerUnitTurnNumber = 0;
+                        PlayerTurnNumber = 0;
+
+                        activePlayer = players[PlayerTurnNumber];
+                        activeUnit = activePlayer.units[PlayerUnitTurnNumber];
+                        Debug.WriteLine("No more players left, need to reset");
+
+                    }
 
                 }
 
             }
-
-        }
-
-        private void ResetTurns()
-        {
-            
-            foreach (Unit unit in unitsAwaitingTurn)
-            {
-
-                unit.TurnComplete = false;
-                unit.TurnStarted = false;
-
-            }
-
-        }
-
-        private bool CheckTurnOver()
-        {
-            Boolean turnOver = true;
-
-            for (int i = 0; i < unitsAwaitingTurn.Count; i++)
-            {
-
-                if ( !unitsAwaitingTurn[i].TurnComplete)
-                {
-
-                    turnOver = false;
-
-                }
-
-            }
-
-            return turnOver;
-        }
-
-        private Unit CheckForPlayerUnit()
-        {
-
-            Unit unit = null;
-
-            for (int i = 0; i < unitsAwaitingTurn.Count;i++)
-            {
-
-                if(unitsAwaitingTurn[i] is Player && !unitsAwaitingTurn[i].TurnComplete)
-                {
-
-                    unit = unitsAwaitingTurn[i];                  
-
-                }
-
-            }
-
-            return unit;
-
-        }
-
-        private Unit CheckForEnemyUnit()
-        {
-
-            Unit unit = null;
-
-            for (int i = 0; i < unitsAwaitingTurn.Count; i++)
-            {
-
-                if (unitsAwaitingTurn[i] is Enemy && !unitsAwaitingTurn[i].TurnComplete)
-                {
-
-                    unit = unitsAwaitingTurn[i];
-
-                }
-
-            }
-
-            return unit;
 
         }
 
     }
 
 }
+
+/*
+ * 
+ * 
+                    //Check for next player
+                    if (PlayerTurnNumber == players.Count - 1)
+                    {
+
+                        PlayerTurnNumber = 0;
+
+                        foreach (Player player in players)
+                        {
+
+                            for (int i = 0; i < player.units.Count; i++)
+                            {
+
+                                player.units[i].IsTurnOver = false;
+
+                            }
+
+                        }
+
+                        activePlayer = players[PlayerTurnNumber];
+                        activeUnit = activePlayer.units[PlayerUnitTurnNumber];
+
+                        Debug.WriteLine("All Turns are Over, start again");                       
+
+                    }
+                    //If no players are waiting, restart..
+                    else
+                    {
+
+                        PlayerTurnNumber++;
+
+                        activePlayer = players[PlayerTurnNumber];
+                        activeUnit = activePlayer.units[PlayerUnitTurnNumber];
+                        Debug.WriteLine("Turn Over");
+
+                    }
+ * 
+ */

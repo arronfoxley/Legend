@@ -17,6 +17,9 @@ namespace Legend.Objects {
         public Boolean TurnStarted = false;
         public Boolean TurnComplete = false;
 
+        public Player IsOwnedBy = null;
+        public Boolean IsTurnOver = false;
+
         internal double elapsedTime;
         internal double elapsedTravelTime = 0;
         internal float lerpAmount = 0;
@@ -101,6 +104,7 @@ namespace Legend.Objects {
                     mCooldown = 0f;
                     step = 0;
                     IsMoving = false;
+                    IsTurnOver = true;
 
                 }
 

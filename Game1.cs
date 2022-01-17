@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PathFinding.PathFinding;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Xml;
@@ -25,10 +26,13 @@ namespace Legend {
 
         private PathFinder pathFinder;
 
-        private Player player;
-        private Enemy enemy;
+        private Unit player;
+        private Unit enemy;
 
         private TurnManager turnManager;
+
+        Player player1;
+        Player player2;
 
         public Game1()
         {
@@ -52,9 +56,11 @@ namespace Legend {
             InitInputs();
             LoadGrid();
             DrawMap();
-            CreatePlayer();
-            CreateEnemy();
             CreateTurnManager();
+            CreatePlayers();
+            CreateTestUnits();
+            SetPlayerTurn(player1);
+            
         }
 
         private void InitCamera()
@@ -131,56 +137,74 @@ namespace Legend {
 
         }
 
-        private void CreatePlayer()
-        {
-
-            Sprite sprite = new Sprite(Content.Load<Texture2D>("player"),32 , 32);
-
-            player = new Player(sprite);
-
-            player.Sprite.X = 32 * 2;
-            player.Sprite.Y = 32 * 2;
-
-            displayList.AddWorldSprite(sprite);
-
-        }
-
-        private void CreateEnemy()
-        {
-
-            Sprite sprite = new Sprite(Content.Load<Texture2D>("enemy"), 32 , 32 );
-
-            enemy = new Enemy(sprite);
-
-            enemy.Sprite.X = 32 * 14;
-            enemy.Sprite.Y = 32 * 14;
-
-            displayList.AddWorldSprite(sprite);
-
-        }
-
         private void CreateTurnManager()
         {
 
             turnManager = new TurnManager();
-            turnManager.AddUnitToTurnList(player);
-            turnManager.AddUnitToTurnList(enemy);
 
-            turnManager.ActiveUnit = player;
+        }
+
+        private void CreatePlayers()
+        {
+
+             player1 = new Player();
+             player2 = new Player();
+
+            turnManager.AddPlayerToTurnList(player1);
+            turnManager.AddPlayerToTurnList(player2);
+
+        }
+
+        private void CreateTestUnits()
+        {
+
+            Sprite sprite = new Sprite(Content.Load<Texture2D>("player"), 32, 32);
+
+            player = new Unit(sprite);
+
+            player.Sprite.X = 32 * 2;
+            player.Sprite.Y = 32 * 2;
+           
+            player1.AddUnitToUnitList(player);
+
+            displayList.AddWorldSprite(sprite);
+
+            Sprite sprite2 = new Sprite(Content.Load<Texture2D>("enemy"), 32, 32);
+
+            enemy = new Unit(sprite2);
+
+            enemy.Sprite.X = 32 * 2;
+            enemy.Sprite.Y = 32 * 2;
+
+            player2.AddUnitToUnitList(enemy);
+
+            displayList.AddWorldSprite(sprite2);
+
+        }
+
+
+        private void SetPlayerTurn(Player player)
+        {
+
+            turnManager.ActivePlayer = player;
+
+            turnManager.ActiveUnit = player.units[turnManager.PlayerUnitTurnNumber];
 
         }
 
         private void OnClick(MouseEvent e)
         {
 
-                if (!player.IsMoving && player == turnManager.ActiveUnit)
+                if (turnManager.ActivePlayer == player1 && !turnManager.ActiveUnit.IsMoving)
                 {
-
+                 
                     //pick new path
-                    List<Cell> path = pathFinder.BreadthFirstSearch(grid.GetCellByXY(player.Sprite.X / grid.CellWidth, player.Sprite.Y / grid.CellHeight), grid.GetCellByXY((int)(e.MousePosition.X / grid.CellWidth), (int)(e.MousePosition.Y / grid.CellHeight)));
+                    List<Cell> path = pathFinder.BreadthFirstSearch(
+                        grid.GetCellByXY(turnManager.ActiveUnit.Sprite.X / grid.CellWidth, turnManager.ActiveUnit.Sprite.Y / grid.CellHeight), 
+                        grid.GetCellByXY((int)(e.MousePosition.X / grid.CellWidth), (int)(e.MousePosition.Y / grid.CellHeight))
+                        );
 
-                    player.PrepForMovememnt(path);
-                    player.TurnStarted = true;
+                turnManager.ActiveUnit.PrepForMovememnt(path);
 
                 }
 
@@ -191,22 +215,28 @@ namespace Legend {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.Update(gameTime);
-            enemy.Update(gameTime);
-
-            turnManager.Update();
-
-            if (!player.IsMoving && !enemy.IsMoving && enemy == turnManager.ActiveUnit)
+            
+            if (turnManager.ActivePlayer == player2 && !turnManager.ActiveUnit.IsMoving)
             {
 
+
+                Random rX = new Random();
+                Random rY = new Random();
+
+                int x = rX.Next(0, 20);
+                int y = rY.Next(0, 20);
                 //pick new path
-                List<Cell> path = pathFinder.BreadthFirstSearch(grid.GetCellByXY(enemy.Sprite.X / grid.CellWidth, enemy.Sprite.Y / grid.CellHeight), grid.GetCellByXY(player.Sprite.X / grid.CellWidth, player.Sprite.Y / grid.CellHeight));
+                List<Cell> path = pathFinder.BreadthFirstSearch(
+                    grid.GetCellByXY(turnManager.ActiveUnit.Sprite.X / grid.CellWidth, turnManager.ActiveUnit.Sprite.Y / grid.CellHeight),
+                    grid.GetCellByXY(  x, y )
+                    );
 
-                enemy.PrepForMovememnt(path);
-                enemy.TurnStarted = true;
-
+                turnManager.ActiveUnit.PrepForMovememnt(path);
 
             }
+
+            turnManager.ActiveUnit.Update(gameTime);
+            turnManager.Update();
 
             //displayList.Camera.LookAt(new Vector2(player.Sprite.X, player.Sprite.Y));
 
