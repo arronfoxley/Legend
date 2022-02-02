@@ -1,15 +1,16 @@
 ﻿using FGame.Core;
+using FGame.Events;
 using FGame.Grid;
 using FGame.Objects;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Legend.Objects {
-    public class Unit {
+    public class Unit:Sprite {
 
-        private Sprite sprite;
         private bool isMoving = false;
         private List<Cell> Path;
         private float movementCooldown = 0.3f;
@@ -32,10 +33,10 @@ namespace Legend.Objects {
         internal int step = 0;
         internal int totalSteps = 0;
 
-        public Unit(Sprite sprite)
+        public Unit(Texture2D texture, int width, int height):base(texture,width,height)
         {
 
-            this.sprite =sprite;
+            this.drawLayer = Renderer.GAME_DEPTH_LAYER;
 
         }
 
@@ -111,17 +112,8 @@ namespace Legend.Objects {
 
             }
 
-            Sprite.X = (int)predictedPosition.X;
-            Sprite.Y = (int)predictedPosition.Y;
-
-        }
-
-        public Sprite Sprite
-        {
-
-            get { return sprite; }
-            set { this.sprite = value; }
-
+            X = (int)predictedPosition.X;
+            Y = (int)predictedPosition.Y;
 
         }
 

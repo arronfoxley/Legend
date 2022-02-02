@@ -12,8 +12,9 @@ namespace Legend {
         private Player activePlayer = null;
         private Unit activeUnit = null;
 
+        private int GlobalTurnNumber = 1;
         private int PlayerTurnNumber = 0;
-        public int PlayerUnitTurnNumber = 0;
+        private int PlayerUnitTurnNumber = 0;
 
         public TurnManager()
         {
@@ -57,19 +58,21 @@ namespace Legend {
             if (activeUnit.IsTurnOver)
             {
 
-                //If it is, check for the next unit..
-                if (PlayerUnitTurnNumber < activePlayer.units.Count -1)
+                //If it is, check if there are units awaiting a turn..
+                if (PlayerUnitTurnNumber < activePlayer.Units.Count -1)
                 {
 
-                    activeUnit = activePlayer.units[PlayerUnitTurnNumber];
+                    activeUnit = activePlayer.Units[PlayerUnitTurnNumber];
                     PlayerUnitTurnNumber++;
 
                 }
+                //If there aren't, the players turn is over...
                 else
                 {
 
                     Debug.WriteLine("No more units for this player");
 
+                    //So check if any players are awaiting a turn
                     if (PlayerTurnNumber < players.Count - 1)
                     {
 
@@ -77,21 +80,22 @@ namespace Legend {
                         PlayerTurnNumber++;
 
                         activePlayer = players[PlayerTurnNumber];
-                        activeUnit = activePlayer.units[PlayerUnitTurnNumber];
+                        activeUnit = activePlayer.Units[PlayerUnitTurnNumber];
 
                         Debug.WriteLine("More players left, select next player");
 
                     }
+                    //If there are no further players awaiting a trun, reset each players units and start the process again
                     else
                     {
 
                         foreach (Player player in players)
                         {
 
-                            for (int i = 0; i < player.units.Count; i++)
+                            for (int i = 0; i < player.Units.Count; i++)
                             {
 
-                                player.units[i].IsTurnOver = false;
+                                player.Units[i].IsTurnOver = false;
 
                             }
 
@@ -101,7 +105,8 @@ namespace Legend {
                         PlayerTurnNumber = 0;
 
                         activePlayer = players[PlayerTurnNumber];
-                        activeUnit = activePlayer.units[PlayerUnitTurnNumber];
+                        activeUnit = activePlayer.Units[PlayerUnitTurnNumber];
+                        GlobalTurnNumber++;
                         Debug.WriteLine("No more players left, need to reset");
 
                     }
@@ -115,44 +120,3 @@ namespace Legend {
     }
 
 }
-
-/*
- * 
- * 
-                    //Check for next player
-                    if (PlayerTurnNumber == players.Count - 1)
-                    {
-
-                        PlayerTurnNumber = 0;
-
-                        foreach (Player player in players)
-                        {
-
-                            for (int i = 0; i < player.units.Count; i++)
-                            {
-
-                                player.units[i].IsTurnOver = false;
-
-                            }
-
-                        }
-
-                        activePlayer = players[PlayerTurnNumber];
-                        activeUnit = activePlayer.units[PlayerUnitTurnNumber];
-
-                        Debug.WriteLine("All Turns are Over, start again");                       
-
-                    }
-                    //If no players are waiting, restart..
-                    else
-                    {
-
-                        PlayerTurnNumber++;
-
-                        activePlayer = players[PlayerTurnNumber];
-                        activeUnit = activePlayer.units[PlayerUnitTurnNumber];
-                        Debug.WriteLine("Turn Over");
-
-                    }
- * 
- */
