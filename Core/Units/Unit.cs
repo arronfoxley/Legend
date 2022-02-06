@@ -6,14 +6,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Legend.Objects {
     public class Unit:Sprite {
 
         private bool isMoving = false;
-        private List<Cell> Path;
-        private float movementCooldown = 0.3f;
+        protected List<Cell> path;
+        private float movementCooldown = 0.5f;
 
         public Boolean TurnStarted = false;
         public Boolean TurnComplete = false;
@@ -27,16 +28,29 @@ namespace Legend.Objects {
         internal float movementSpeed = 300f;
         internal int distance = 0;
         internal Vector2 destinationLocation;
-        internal Vector2 startLocation;
+        internal Vector2 stepLocation;
         internal Vector2 predictedPosition;
         internal double mCooldown = 0;
         internal int step = 0;
         internal int totalSteps = 0;
 
+        internal int maxActionPoints = 5;
+        internal int freeActionPoints = 5;
+
+        private Boolean automatedMovement = false;
+
         public Unit(Texture2D texture, int width, int height):base(texture,width,height)
         {
 
             this.drawLayer = Renderer.GAME_DEPTH_LAYER;
+
+        }
+
+        public Boolean AutomatedMovement
+        {
+
+            set { this.automatedMovement = value; }
+            get { return this.automatedMovement; }
 
         }
 
@@ -48,76 +62,144 @@ namespace Legend.Objects {
 
         }
 
+        public List<Cell> Path
+        {
+
+            get { return this.path; }
+
+        }
+
         public void PrepForMovememnt(List<Cell> path)
         {
 
-            this.Path = path;
-            totalSteps = Path.Count - 1;
+            this.path = path;
+            totalSteps = path.Count - 1;
+            freeActionPoints--;
 
-            startLocation = new Vector2(Path[0].WorldX, Path[0].WorldY);
+            if (totalSteps > maxActionPoints)
+            {
+
+                Debug.WriteLine("Journey will require automated movement");
+                automatedMovement = true;
+
+            }
+
+            stepLocation = new Vector2(path[0].WorldX, path[0].WorldY);
 
             step = 1;
 
-            destinationLocation = new Vector2(Path[step].WorldX, Path[step].WorldY);
-            distance = FGameMath.GetDistanceBetweenPoints(startLocation, destinationLocation);
+            destinationLocation = new Vector2(path[step].WorldX, path[step].WorldY);
+            distance = FGameMath.GetDistanceBetweenPoints(stepLocation, destinationLocation);
 
             IsMoving = true;
 
         }
 
-        private void Moving(GameTime gameTime)
+        protected void Moving(GameTime gameTime)
         {
 
+            //if movement is not currently on cooldown..
             if (mCooldown == 0f)
             {
-
+                //set the elapsed time
                 elapsedTime = gameTime.ElapsedGameTime.TotalSeconds;
+                //added it to the elapsed travel time
                 elapsedTravelTime += elapsedTime;
+                //set the lerp amount..
                 lerpAmount = MathHelper.Min(1, (float)(elapsedTravelTime / (distance / movementSpeed)));
-
-                predictedPosition = Vector2.Lerp(startLocation, destinationLocation, lerpAmount);
+                //prediect the poisiton between the step location and destination
+                predictedPosition = Vector2.Lerp(stepLocation, destinationLocation, lerpAmount);
 
             }
 
+            //if the movememnt is complete
             if (lerpAmount == 1)
             {
+                //Reset the elapsed travel time
                 elapsedTravelTime = 0;
+                //Begin cooldown
                 mCooldown += gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (step < totalSteps)
+                //If we have any free action points available
+                if (freeActionPoints > 0  && step < totalSteps)
                 {
 
+                    //And the cooldown period for movement has been complete
                     if (mCooldown >= movementCooldown)
                     {
 
-                        startLocation = new Vector2(Path[step].WorldX, Path[step].WorldY);
+                        //Get the location of the current step of the path the unit is on
+                        stepLocation = new Vector2(path[step].WorldX, path[step].WorldY);
+
+                        //Iterate to the next step
                         step++;
-                        destinationLocation = new Vector2(Path[step].WorldX, Path[step].WorldY);
-                        distance = FGame.Core.FGameMath.GetDistanceBetweenPoints(startLocation, destinationLocation);
+                        //Remove a free action point for the cost of movement
+                        freeActionPoints--;
+                        //Set the destination to the iterated step
+                        destinationLocation = new Vector2(path[step].WorldX, path[step].WorldY);
+                        //Get the distance between the step location and the destination
+                        distance = FGame.Core.FGameMath.GetDistanceBetweenPoints(stepLocation, destinationLocation);
+                        //Movement off cooldown
                         mCooldown = 0f;
+
+                        Debug.WriteLine(freeActionPoints);
+
+                    }
+                    
+
+                }
+                //If unit has no free action points left, it cant be moved for the remainder of the turn..
+                else
+                {
+                    //If the path has been fully stepped through, reset the unit..
+                    if (step == totalSteps)
+                    {
+
+                        mCooldown = 0f;
+                        step = 0;
+                        IsMoving = false;                      
+                        automatedMovement = false;
+                        path = null;
+                        distance = 0;
+
+                        Debug.WriteLine("Journey Over");
+
+                    }
+
+                    if (!IsTurnOver)
+                    {
+
+                        IsTurnOver = true;
+                        Debug.WriteLine("Turn Over");
 
                     }
 
                 }
-                else
-                {
-
-                    mCooldown = 0f;
-                    step = 0;
-                    IsMoving = false;
-                    IsTurnOver = true;
-
-                }
-
 
             }
 
-            X = (int)predictedPosition.X;
-            Y = (int)predictedPosition.Y;
+            WorldX = (int)predictedPosition.X;
+            WorldY = (int)predictedPosition.Y;
 
         }
 
-        public void Update(GameTime gameTime)
+        public int FreeActionPoints
+        {
+
+            set { this.freeActionPoints = value; }
+            get {  return freeActionPoints; }
+
+        }
+
+        public void Reset()
+        {
+
+            freeActionPoints = maxActionPoints;
+            IsTurnOver = false;
+
+        }
+
+        public virtual void Update(GameTime gameTime)
         {
 
             if (IsMoving)
@@ -125,7 +207,7 @@ namespace Legend.Objects {
 
                 Moving(gameTime);
 
-            }
+            }          
 
         }
 

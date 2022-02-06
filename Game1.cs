@@ -5,6 +5,8 @@ using FGame.Grid;
 using FGame.Menus;
 using FGame.Objects;
 using GameMenu.Objects;
+using Legend.Core.Management;
+using Legend.Core.Structures;
 using Legend.Core.Tiles;
 using Legend.Core.Units;
 using Legend.Objects;
@@ -23,18 +25,16 @@ namespace Legend {
         private GameSpriteManager gameSpriteManager;
         private MouseInputManager mouseInputManager;
         private Grid grid;
-
+        Player player1;
         private PathFinder pathFinder;
 
         private Pioneer pioneer;
+        private Pioneer pioneer2;
 
         private TurnManager turnManager;
-
         private GameMenuManager gameMenuManager;
-
-        Player player1;
-
-        private List<Sprite> test = new List<Sprite>();
+        private UIManager uiManager;
+        private UnitManager unitManager;
 
         public Game1()
         {
@@ -63,14 +63,15 @@ namespace Legend {
             InitInputs();
             LoadGrid();
             DrawMap();
-            CreateTurnManager();
-            CreateGameMenuManager();
-            //CreateUIManager();
+            CreateManagers();
+            CreateUIButtons();
             CreatePlayers();
             CreateTestUnits();
             CreateGameMenus();
-            SetPlayerTurn(player1);
-            
+
+            turnManager.SetPlayerTurn();
+            unitManager.AddUnits(turnManager.ActivePlayer.Units);
+
         }
 
         private void InitCamera()
@@ -121,33 +122,56 @@ namespace Legend {
             foreach (KeyValuePair<int[],Cell> kvp in grid.Cells)
             {
 
-                Tile tile = new Tile(Content.Load<Texture2D>("gravel"), kvp.Value.Width, kvp.Value.Height);
-                tile.X = kvp.Value.GridX * kvp.Value.Width;
-                tile.Y = kvp.Value.GridY * kvp.Value.Height;
+                Tile tile = new Tile(Content.Load<Texture2D>("bg"), kvp.Value.Width, kvp.Value.Height);
+
+                tile.WorldX = kvp.Value.GridX * kvp.Value.Width;
+                tile.WorldY = kvp.Value.GridY * kvp.Value.Height;
+                tile.DrawX = tile.WorldX;
+                tile.DrawY = tile.WorldY;
+
                 gameSpriteManager.AddSprite(tile);
 
-                tile.AddEventListener(MouseEvent.LEFT_CLICK, OnClick);                
+                tile.AddEventListener(MouseEvent.LEFT_CLICK, OnClick);
+                tile.AddEventListener(MouseEvent.RIGHT_CLICK, OnClick);
 
             }
 
         }
 
-        private void CreateTurnManager()
+        private void CreateManagers()
         {
-
+           
+            gameMenuManager = new GameMenuManager();
+            uiManager = new UIManager();
+            unitManager = new UnitManager();
             turnManager = new TurnManager();
 
         }
 
-        private void CreateGameMenuManager()
+        private void CreateUIButtons()
         {
 
-            gameMenuManager = new GameMenuManager();
 
-        }
+            Button passTurnButton = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
+            passTurnButton.Color = Color.Red;
 
-        private void CreateUIManager()
-        {
+            passTurnButton.DrawLayer = 1;
+
+            passTurnButton.OverColor = Color.DarkRed;
+            passTurnButton.OutColor = Color.Red;
+
+            passTurnButton.Name = "passTurnButton";
+
+            passTurnButton.Active = true;
+
+            uiManager.AddSprite(passTurnButton);
+            Renderer.SpriteList.Add(passTurnButton);
+
+            passTurnButton.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
+            passTurnButton.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
+            passTurnButton.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
+
+            
 
         }
 
@@ -164,27 +188,50 @@ namespace Legend {
 
             pioneer = new Pioneer(Content.Load<Texture2D>("player"), 32, 32);
 
+            pioneer.Name = "pioneer";
+
+            pioneer.AddEventListener(MouseEvent.LEFT_CLICK, OnClick);
             pioneer.AddEventListener(MouseEvent.RIGHT_CLICK, OnClick);
 
-            pioneer.X = 32 * 2;
-            pioneer.Y = 32 * 2;
-           
+            pioneer.WorldX = 32 * 2;
+            pioneer.WorldY = 32 * 2;
+
+            pioneer.DrawX = pioneer.WorldX;
+            pioneer.DrawY = pioneer.WorldY;
+
             player1.AddUnitToUnitList(pioneer);
 
             gameSpriteManager.AddSprite(pioneer);
+
+            pioneer2 = new Pioneer(Content.Load<Texture2D>("player"), 32, 32);
+
+            pioneer2.Name = "pioneer2";
+
+            pioneer2.AddEventListener(MouseEvent.LEFT_CLICK, OnClick);
+            pioneer2.AddEventListener(MouseEvent.RIGHT_CLICK, OnClick);
+
+            pioneer2.WorldX = 32 * 8;
+            pioneer2.WorldY = 32 * 8;
+
+            pioneer2.DrawX = pioneer.WorldX;
+            pioneer2.DrawY = pioneer.WorldY;
+
+            player1.AddUnitToUnitList(pioneer2);
+
+            gameSpriteManager.AddSprite(pioneer2);
+
 
         }
 
         private void CreateGameMenus()
         {
 
-            Sprite sprite = new Sprite(Content.Load<Texture2D>("bg"), 50, 40);
+            Button buildButton = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
+            Button actionButton = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
+            Button closeButton = new Button(Content.Load<Texture2D>("smallButtonBg"), 32, 32);
 
-            Button buildButton = new Button(Content.Load<Texture2D>("bg"), 50, 20);
-            Button actionButton = new Button(Content.Load<Texture2D>("bg"), 50, 20);
-            Button closeButton = new Button(Content.Load<Texture2D>("bg"), 20, 20);
-
-            Menu menu = new Menu(sprite.Width, sprite.Height, sprite, closeButton);
+            Menu menu = new Menu(Content.Load<Texture2D>("menuBg"), 64, 32, closeButton);
+            menu.Name = "pioneerMenu";
 
             buildButton.Color = Color.LightBlue;
             actionButton.Color = Color.CornflowerBlue;
@@ -194,6 +241,8 @@ namespace Legend {
 
             buildButton.OutColor = buildButton.Color;
             actionButton.OutColor = actionButton.Color;
+
+            closeButton.Color = Color.Red;
 
             buildButton.Name = "buildButton";
             actionButton.Name = "actionButton";
@@ -214,14 +263,16 @@ namespace Legend {
 
             menu.Hide();
 
-            menu.BackgroundSprite.Color = Color.Black;
+            menu.Color = Color.Black;
 
-            gameMenuManager.AddMenu("pioneerMenu", menu);
+            gameMenuManager.AddMenu(menu.Name, menu);
 
-            Button settlementButton = new Button(Content.Load<Texture2D>("bg"), 50, 20);
-            Button closeButton2 = new Button(Content.Load<Texture2D>("bg"), 20, 20);
+            Button settlementButton = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
+            Button closeButton2 = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
 
-            Menu buildMenu = new Menu(sprite.Width, sprite.Height, sprite, closeButton2);
+            Menu buildMenu = new Menu(Content.Load<Texture2D>("menuBg"), 64, 32, closeButton2);
+
+            buildMenu.Name = "buildMenu";
 
             settlementButton.Color = Color.LightGreen;
             settlementButton.OverColor = Color.DarkGreen;
@@ -235,20 +286,14 @@ namespace Legend {
 
             closeButton2.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
 
-            settlementButton.Name = "settlementButton";
+            settlementButton.Name = "buildSettlementButton";
             closeButton2.Name = "closeButton";
+
+            closeButton2.Color = Color.Red;
 
             buildMenu.Hide();
 
-            gameMenuManager.AddMenu("buildMenu", buildMenu);
-
-        }
-
-        private void SetPlayerTurn(Player player)
-        {
-
-            turnManager.ActivePlayer = player;
-            turnManager.ActiveUnit = player.Units[0];
+            gameMenuManager.AddMenu(buildMenu.Name, buildMenu);
 
         }
 
@@ -268,23 +313,46 @@ namespace Legend {
 
             Button button = (Button)e.Target;
 
+            Debug.WriteLine(button.Name);
+
+            if (button.Name.Contains("passTurnButton"))
+            {
+
+                turnManager.ActivePlayer.IsTurnComplete = true;
+
+                Debug.WriteLine(turnManager.CheckGlobalTurnComplete());
+
+                if (turnManager.CheckGlobalTurnComplete())
+                {
+
+                    turnManager.ResetPlayers();
+                    unitManager.ResetPlayerUnits(turnManager.Players);
+
+                    Debug.WriteLine("Global turn over");
+
+                }
+
+                Debug.WriteLine("Pass turn to next player");
+
+                turnManager.SetPlayerTurn();             
+                unitManager.CheckForAutomatedUnitTurns();
+                unitManager.AddUnits(turnManager.ActivePlayer.Units);
+
+            }
+
             if (button.Name.Contains("closeButton"))
             {
 
-                button.ParentMenu.Hide();
+                gameMenuManager.HideMenu();
 
             }
 
             if (button.Name.Contains("buildButton"))
             {
 
-                Debug.WriteLine("Build button selected");
-                button.ParentMenu.Hide();
-
+                gameMenuManager.HideMenu();
                 gameMenuManager.ShowMenu("buildMenu", (int)e.MouseScreenPosition.X, (int)e.MouseScreenPosition.Y);
-
-                Menu menu = gameMenuManager.GetMenu("buildMenu");
-                menu.StackButtonsVertically(100);
+                gameMenuManager.ActiveMenu.StackButtonsVertically(100);
 
             }
 
@@ -295,10 +363,18 @@ namespace Legend {
 
             }
 
-            if (button.Name.Contains("settlementButton"))
+            if (button.Name.Contains("buildSettlementButton"))
             {
 
-                Debug.WriteLine("Settlement button clicked");
+                if (unitManager.ActiveUnit is Pioneer)
+                {
+
+                    gameMenuManager.HideMenu();
+                    Pioneer pioneer = (Pioneer)unitManager.ActiveUnit;
+
+                    pioneer.Build("settlement", Content.Load<Texture2D>("bg"),32,32);
+
+                }            
 
             }
 
@@ -309,7 +385,6 @@ namespace Legend {
 
             Button button = (Button)e.Target;
             button.ApplyEffect(Button.OVER);
-            Debug.WriteLine(button.Name+" over");
 
         }
 
@@ -326,49 +401,77 @@ namespace Legend {
 
             Sprite target = (Sprite)e.Target;
 
-            if (e.Type == MouseEvent.LEFT_CLICK)
+            if (!unitManager.AutomationMode)
             {
 
-                if (target is Pioneer)
+                if (e.Type == MouseEvent.LEFT_CLICK)
                 {
 
-                    Debug.WriteLine("Pioneer");
-                    
-
-                }
-
-                if(target is Tile)
-                {
-
-                    if (!turnManager.ActiveUnit.IsMoving)
+                    if (target is Pioneer)
                     {
 
-                        //pick new path
-                        List<Cell> path = pathFinder.BreadthFirstSearch(grid.GetCellByXY(turnManager.ActiveUnit.X / grid.CellWidth, turnManager.ActiveUnit.Y / grid.CellHeight), grid.GetCellByXY((int)(e.MouseWorldPosition.X / grid.CellWidth), (int)(e.MouseWorldPosition.Y / grid.CellHeight)));
+                        Debug.WriteLine("Pioneer");
 
-                        turnManager.ActiveUnit.PrepForMovememnt(path);
-                        turnManager.ActiveUnit.TurnStarted = true;
+                        Pioneer pioneer = (Pioneer)e.Target;
+
+                        if (unitManager.UnitOfActivePlayer(pioneer))
+                        {
+                            Debug.WriteLine("Is player unit");
+                            unitManager.ActiveUnit = pioneer;
+                            Renderer.Camera.Target = pioneer;
+
+                        }
+
+                    }
+
+                    if (target is Tile)
+                    {
+
+                        if (unitManager.ActiveUnit != null && !unitManager.ActiveUnit.IsTurnOver && gameMenuManager.ActiveMenu == null)
+                        {
+
+                            if (!unitManager.ActiveUnit.IsMoving)
+                            {
+
+                                Renderer.Camera.Target = unitManager.ActiveUnit;
+
+                                //pick new path
+                                List<Cell> path = pathFinder.BreadthFirstSearch(grid.GetCellByXY(unitManager.ActiveUnit.WorldX / grid.CellWidth, unitManager.ActiveUnit.WorldY / grid.CellHeight), grid.GetCellByXY((int)(e.MouseWorldPosition.X / grid.CellWidth), (int)(e.MouseWorldPosition.Y / grid.CellHeight)));
+
+                                unitManager.ActiveUnit.PrepForMovememnt(path);
+                                unitManager.ActiveUnit.TurnStarted = true;
+
+                            }
+
+                        }
 
                     }
 
                 }
 
-            }
 
-
-            if (e.Type == MouseEvent.RIGHT_CLICK)
-            {
-
-                //Open unit menu
-                if (target is Pioneer)
+                if (e.Type == MouseEvent.RIGHT_CLICK)
                 {
 
-                   gameMenuManager.ShowMenu("pioneerMenu", (int)e.MouseScreenPosition.X, (int)e.MouseScreenPosition.Y);
+                    if (target is Tile)
+                    {
+                        
+                        Renderer.Camera.Target = target;
 
-                    Menu menu = gameMenuManager.GetMenu("pioneerMenu");
-                    menu.StackButtonsVertically(100);
+                    }
 
-                }            
+                    //Open unit menu
+                    if (target is Pioneer && gameMenuManager.ActiveMenu == null)
+                    {
+
+                        gameMenuManager.ShowMenu("pioneerMenu", (int)e.MouseScreenPosition.X, (int)e.MouseScreenPosition.Y);
+
+                        Menu menu = gameMenuManager.GetMenu("pioneerMenu");
+                        menu.StackButtonsVertically(100);
+
+                    }
+
+                }
 
             }
 
@@ -379,23 +482,30 @@ namespace Legend {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            turnManager.ActiveUnit.Update(gameTime);
-            turnManager.Update();
-
-            mouseInputManager.Update();           
+            
+            mouseInputManager.Update();
+            turnManager.Update(gameTime);
+            unitManager.Update(gameTime);
             base.Update(gameTime);
+            
 
         }
 
         protected override void Draw(GameTime gameTime)
         {
 
-            Renderer.GraphicsDeviceManager.GraphicsDevice.Clear(Color.White);
-            Renderer.Camera.LookAt(new Vector2(turnManager.ActiveUnit.X, turnManager.ActiveUnit.Y));
+            Renderer.GraphicsDeviceManager.GraphicsDevice.Clear(Color.Black);
+
+            if (Renderer.Camera.Target != null)
+            {
+
+                Renderer.Camera.LookAt(new Vector2(Renderer.Camera.Target.WorldX, Renderer.Camera.Target.WorldY));
+
+            }
 
             gameSpriteManager.Render();
             gameMenuManager.Render();
-            Renderer.DrawUI(test);
+            uiManager.Render();
             
             base.Draw(gameTime);
 
