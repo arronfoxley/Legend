@@ -24,6 +24,7 @@ namespace Legend {
 
         private GameSpriteManager gameSpriteManager;
         private MouseInputManager mouseInputManager;
+        private MouseInputManager2 mouseInputManager2;
         private Grid grid;
         Player player1;
         private PathFinder pathFinder;
@@ -91,6 +92,7 @@ namespace Legend {
         {
 
             mouseInputManager = new MouseInputManager(Renderer.Camera, this.Window);
+            mouseInputManager2 = new MouseInputManager2();
 
         }
 
@@ -537,6 +539,7 @@ namespace Legend {
 
             
             mouseInputManager.Update();
+            mouseInputManager2.Update(Mouse.GetState(this.Window).X, Mouse.GetState(this.Window).Y);
             turnManager.Update(gameTime);
             unitManager.Update(gameTime);
             base.Update(gameTime);
