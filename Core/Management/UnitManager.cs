@@ -124,7 +124,7 @@ namespace Legend.Core.Management {
                 for (int o = 0; o < players[i].Units.Count; o++)
                 {
 
-                    players[i].Units[o].Reset();
+                    players[i].Units[o].TurnActionReset();
 
                 }
 

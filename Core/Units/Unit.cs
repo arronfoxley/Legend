@@ -155,12 +155,7 @@ namespace Legend.Objects {
                     if (step == totalSteps)
                     {
 
-                        mCooldown = 0f;
-                        step = 0;
-                        IsMoving = false;                      
-                        automatedMovement = false;
-                        path = null;
-                        distance = 0;
+                        JourneyReset();
 
                         Debug.WriteLine("Journey Over");
 
@@ -191,11 +186,23 @@ namespace Legend.Objects {
 
         }
 
-        public void Reset()
+        public void TurnActionReset()
         {
 
             freeActionPoints = maxActionPoints;
             IsTurnOver = false;
+
+        }
+
+        public void JourneyReset()
+        {
+
+            mCooldown = 0f;
+            step = 0;
+            IsMoving = false;
+            automatedMovement = false;
+            path = null;
+            distance = 0;
 
         }
 

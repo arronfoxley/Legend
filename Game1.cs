@@ -36,6 +36,8 @@ namespace Legend {
         private UIManager uiManager;
         private UnitManager unitManager;
 
+        Button cancelMovementButton;
+
         public Game1()
         {
 
@@ -105,6 +107,8 @@ namespace Legend {
             int cellsY = int.Parse(dataNode.Attributes.GetNamedItem("CellsY").InnerText);
             int cellWidth = int.Parse(dataNode.Attributes.GetNamedItem("CellWidth").InnerText);
             int cellHeight = int.Parse(dataNode.Attributes.GetNamedItem("CellHeight").InnerText);
+
+            Debug.WriteLine(cellWidth);
 
             XmlNodeList cellList = xmlDocument.SelectNodes("Grid/Cells/Cell");
 
@@ -203,7 +207,7 @@ namespace Legend {
 
             gameSpriteManager.AddSprite(pioneer);
 
-            pioneer2 = new Pioneer(Content.Load<Texture2D>("player"), 32, 32);
+            pioneer2 = new Pioneer(Content.Load<Texture2D>("player"), 32, 32);           
 
             pioneer2.Name = "pioneer2";
 
@@ -245,7 +249,7 @@ namespace Legend {
             closeButton.Color = Color.Red;
 
             buildButton.Name = "buildButton";
-            actionButton.Name = "actionButton";
+            actionButton.Name = "pioneerActionButton";
             closeButton.Name = "closeButton";
 
             menu.AddButton(buildButton);
@@ -266,6 +270,8 @@ namespace Legend {
             menu.Color = Color.Black;
 
             gameMenuManager.AddMenu(menu.Name, menu);
+
+            //****************
 
             Button settlementButton = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
             Button closeButton2 = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
@@ -295,6 +301,35 @@ namespace Legend {
 
             gameMenuManager.AddMenu(buildMenu.Name, buildMenu);
 
+            //******************
+
+             cancelMovementButton = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
+            Button closeButton3 = new Button(Content.Load<Texture2D>("buttonBg"), 64, 16);
+
+            Menu actionMenu = new Menu(Content.Load<Texture2D>("menuBg"), 64, 32, closeButton3);
+
+            actionMenu.Name = "pioneerActionMenu";
+            cancelMovementButton.Name = "cancelMovementButton";
+            closeButton3.Name = "closeButton";
+
+            closeButton3.Color = Color.Red;
+
+            cancelMovementButton.Color = Color.Yellow;
+            cancelMovementButton.OverColor = Color.YellowGreen;
+            cancelMovementButton.OutColor = cancelMovementButton.Color;
+
+            actionMenu.AddButton(cancelMovementButton);
+
+            cancelMovementButton.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
+            cancelMovementButton.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
+            cancelMovementButton.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
+
+            closeButton3.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
+
+            actionMenu.Hide();
+
+            gameMenuManager.AddMenu(actionMenu.Name, actionMenu);
+
         }
 
         private void OnOver(MouseEvent e)
@@ -315,12 +350,12 @@ namespace Legend {
 
             Debug.WriteLine(button.Name);
 
+            Debug.WriteLine(cancelMovementButton.Active);
+
             if (button.Name.Contains("passTurnButton"))
             {
 
                 turnManager.ActivePlayer.IsTurnComplete = true;
-
-                Debug.WriteLine(turnManager.CheckGlobalTurnComplete());
 
                 if (turnManager.CheckGlobalTurnComplete())
                 {
@@ -351,15 +386,32 @@ namespace Legend {
             {
 
                 gameMenuManager.HideMenu();
-                gameMenuManager.ShowMenu("buildMenu", (int)e.MouseScreenPosition.X, (int)e.MouseScreenPosition.Y);
-                gameMenuManager.ActiveMenu.StackButtonsVertically(100);
+                gameMenuManager.ShowMenu("buildMenu", (int)e.MouseScreenPosition.X, (int)e.MouseScreenPosition.Y, Menu.VERTICAL_STACK, 100);
 
             }
 
-            if (button.Name.Contains("actionButton"))
+            if (button.Name.Contains("pioneerActionButton"))
             {
 
                 Debug.WriteLine("Action button selected");
+                gameMenuManager.HideMenu();
+                gameMenuManager.ShowMenu("pioneerActionMenu", (int)e.MouseScreenPosition.X, (int)e.MouseScreenPosition.Y, Menu.VERTICAL_STACK, 100);
+
+
+            }
+
+            if (button.Name.Contains("cancelMovementButton"))
+            {
+
+                Debug.WriteLine("Jounrey has been cancelled");
+                if (unitManager.ActiveUnit.AutomatedMovement)
+                {
+
+                    Debug.WriteLine("Jounrey has been cancelled");
+                    unitManager.ActiveUnit.JourneyReset();
+                    gameMenuManager.HideMenu();
+
+                }
 
             }
 
@@ -453,6 +505,9 @@ namespace Legend {
                 if (e.Type == MouseEvent.RIGHT_CLICK)
                 {
 
+                    Debug.WriteLine(e.MouseScreenPosition);
+                    Debug.WriteLine(e.MouseWorldPosition);
+
                     if (target is Tile)
                     {
                         
@@ -464,10 +519,8 @@ namespace Legend {
                     if (target is Pioneer && gameMenuManager.ActiveMenu == null)
                     {
 
-                        gameMenuManager.ShowMenu("pioneerMenu", (int)e.MouseScreenPosition.X, (int)e.MouseScreenPosition.Y);
-
-                        Menu menu = gameMenuManager.GetMenu("pioneerMenu");
-                        menu.StackButtonsVertically(100);
+                        gameMenuManager.ShowMenu("pioneerMenu", (int)e.MouseScreenPosition.X , (int)e.MouseScreenPosition.Y, Menu.VERTICAL_STACK, 100);
+                        Menu menu = gameMenuManager.GetMenu("pioneerMenu");                       
 
                     }
 
@@ -506,8 +559,9 @@ namespace Legend {
             gameSpriteManager.Render();
             gameMenuManager.Render();
             uiManager.Render();
-            
+
             base.Draw(gameTime);
+            
 
         }
     }
