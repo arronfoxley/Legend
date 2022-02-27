@@ -10,8 +10,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Legend", "Legend.csproj", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FGame", "..\FGame\FGame.csproj", "{4EE34A08-F6FB-4FC5-98FE-1E7EF59C43D4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameMenu", "..\GameMenu\GameMenu.csproj", "{F3BF18C7-314F-4AF0-B97D-2A35E040F059}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathFinding", "..\PathFinding\PathFinding.csproj", "{1591C4C2-47F5-4AC0-9BDD-939A359AFFC7}"
 EndProject
 Global
@@ -28,10 +26,6 @@ Global
 		{4EE34A08-F6FB-4FC5-98FE-1E7EF59C43D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EE34A08-F6FB-4FC5-98FE-1E7EF59C43D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EE34A08-F6FB-4FC5-98FE-1E7EF59C43D4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3BF18C7-314F-4AF0-B97D-2A35E040F059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3BF18C7-314F-4AF0-B97D-2A35E040F059}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3BF18C7-314F-4AF0-B97D-2A35E040F059}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3BF18C7-314F-4AF0-B97D-2A35E040F059}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1591C4C2-47F5-4AC0-9BDD-939A359AFFC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1591C4C2-47F5-4AC0-9BDD-939A359AFFC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1591C4C2-47F5-4AC0-9BDD-939A359AFFC7}.Release|Any CPU.ActiveCfg = Release|Any CPU

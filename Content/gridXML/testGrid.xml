@@ -1,6 +1,82 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Grid>
-  <Data CellsX="20" CellsY="20" CellWidth="32" CellHeight="32" />
-  <NonPassable>  
-  </NonPassable>
-</Grid>
+<Map>
+  <Grid>
+    <Data CellsX="11" CellsY="11" CellWidth="48" CellHeight="48" />
+    <NonPassable>
+    </NonPassable>
+  </Grid>
+  <Terrain>
+      <Forest>
+       <Resource CellX="4" CellY="0" TextureName="tlt"/>
+       <Resource CellX="5" CellY="0" TextureName="tct"/>
+       <Resource CellX="6" CellY="0" TextureName="trt"/>
+       <Resource CellX="4" CellY="1" TextureName="mlt"/>
+       <Resource CellX="5" CellY="1" TextureName="mct"/>
+       <Resource CellX="6" CellY="1" TextureName="mrt"/>
+        <Resource CellX="4" CellY="2" TextureName="blt"/>
+        <Resource CellX="5" CellY="2" TextureName="bct"/>
+        <Resource CellX="6" CellY="2" TextureName="brt"/>
+      </Forest>
+    <Forest>
+      <Resource CellX="4" CellY="8" TextureName="tlt"/>
+      <Resource CellX="5" CellY="8" TextureName="tct"/>
+      <Resource CellX="6" CellY="8" TextureName="trt"/>
+      <Resource CellX="4" CellY="9" TextureName="mlt"/>
+      <Resource CellX="5" CellY="9" TextureName="mct"/>
+      <Resource CellX="6" CellY="9" TextureName="mrt"/>
+      <Resource CellX="4" CellY="10" TextureName="blt"/>
+      <Resource CellX="5" CellY="10" TextureName="bct"/>
+      <Resource CellX="6" CellY="10" TextureName="brt"/>
+    </Forest>
+    <Forest>
+      <Resource CellX="8" CellY="0" TextureName="tlt"/>
+      <Resource CellX="9" CellY="0" TextureName="tct"/>
+      <Resource CellX="10" CellY="0" TextureName="trt"/>
+      <Resource CellX="8" CellY="1" TextureName="mlt"/>
+      <Resource CellX="9" CellY="1" TextureName="mct"/>
+      <Resource CellX="10" CellY="1" TextureName="mrt"/>
+      <Resource CellX="8" CellY="2" TextureName="blt"/>
+      <Resource CellX="9" CellY="2" TextureName="bct"/>
+      <Resource CellX="10" CellY="2" TextureName="brt"/>
+    </Forest>
+    <Forest>
+      <Resource CellX="8" CellY="4" TextureName="tlt"/>
+      <Resource CellX="9" CellY="4" TextureName="tct"/>
+      <Resource CellX="10" CellY="4" TextureName="trt"/>
+      <Resource CellX="8" CellY="5" TextureName="mlt"/>
+      <Resource CellX="9" CellY="5" TextureName="mct"/>
+      <Resource CellX="10" CellY="5" TextureName="mrt"/>
+      <Resource CellX="8" CellY="6" TextureName="blt"/>
+      <Resource CellX="9" CellY="6" TextureName="bct"/>
+      <Resource CellX="10" CellY="6" TextureName="brt"/>
+    </Forest>
+    <Forest>
+      <Resource CellX="8" CellY="8" TextureName="tlt"/>
+      <Resource CellX="9" CellY="8" TextureName="tct"/>
+      <Resource CellX="10" CellY="8" TextureName="trt"/>
+      <Resource CellX="8" CellY="9" TextureName="mlt"/>
+      <Resource CellX="9" CellY="9" TextureName="mct"/>
+      <Resource CellX="10" CellY="9" TextureName="mrt"/>
+      <Resource CellX="8" CellY="10" TextureName="blt"/>
+      <Resource CellX="9" CellY="10" TextureName="bct"/>
+      <Resource CellX="10" CellY="10" TextureName="brt"/>
+    </Forest>
+      <Mountain>
+        <Resource CellX="3" CellY="4" TextureName="mtl"/>
+        <Resource CellX="4" CellY="4" TextureName="mtc"/>
+        <Resource CellX="5" CellY="4" TextureName="mtr"/>
+        <Resource CellX="3" CellY="5" TextureName="mlm"/>
+        <Resource CellX="4" CellY="5" TextureName="mcm"/>
+        <Resource CellX="5" CellY="5" TextureName="mrm"/>
+        <Resource CellX="3" CellY="6" TextureName="mbl"/>
+        <Resource CellX="4" CellY="6" TextureName="mbc"/>
+        <Resource CellX="5" CellY="6" TextureName="mbr"/>
+      </Mountain>
+  </Terrain>
+  <Terrain-Shadow>
+    <Mountain>
+      <Resource CellX="5" CellY="4" TextureName="shadMountTop"/>
+      <Resource CellX="5" CellY="5" TextureName="shadMountBottom"/>
+    </Mountain>
+  </Terrain-Shadow>
+</Map>

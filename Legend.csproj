@@ -22,7 +22,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FGame\FGame.csproj" />
-    <ProjectReference Include="..\GameMenu\GameMenu.csproj" />
     <ProjectReference Include="..\PathFinding\PathFinding.csproj" />
   </ItemGroup>
 </Project>

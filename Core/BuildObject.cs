@@ -23,7 +23,12 @@ namespace Legend.Core {
 
             this.elapsedBuildTime += elapsedBuildTime;
 
-            Debug.WriteLine("test");
+            if (this.elapsedBuildTime == buildTime)
+            {
+
+                buildComplete = true;
+
+            }
 
         }
 

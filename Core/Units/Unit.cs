@@ -1,4 +1,5 @@
 ﻿using FGame.Core;
+using FGame.Core.Objects.Game;
 using FGame.Events;
 using FGame.Grid;
 using FGame.Objects;
@@ -10,7 +11,7 @@ using System.Diagnostics;
 using System.Text;
 
 namespace Legend.Objects {
-    public class Unit:Sprite {
+    public class Unit:GameSprite {
 
         private bool isMoving = false;
         protected List<Cell> path;
@@ -39,7 +40,7 @@ namespace Legend.Objects {
 
         private Boolean automatedMovement = false;
 
-        public Unit(Texture2D texture, int width, int height):base(texture,width,height)
+        public Unit(Texture2D texture, int width, int height):base(texture, width, height)
         {
 
             this.drawLayer = Renderer.GAME_DEPTH_LAYER;

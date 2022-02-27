@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using System.Collections.Generic;
+using FGame.Core;
+using System;
 
 namespace Legend.Core.Units {
     public class Pioneer : Unit {
@@ -11,7 +13,7 @@ namespace Legend.Core.Units {
         protected float buildTimeInTurns = 1f;
         protected float elapsedBuildTimeInTurns = 0f;
 
-        protected bool isBuilding = false;
+        protected Boolean isBuilding = false;
 
         private List<BuildObject> buildList = new List<BuildObject>();
 
@@ -20,15 +22,24 @@ namespace Legend.Core.Units {
         public Pioneer(Texture2D texture, int width, int height) : base(texture, width, height)
         {
 
-            this.DrawLayer = 0.5f;
+            drawLayer = Renderer.GAME_DEPTH_LAYER;
 
         }
 
-        public void Build(string structureType, Texture2D texture, int width, int height)
+        public Boolean IsBuilding
+        {
+
+            set { this.isBuilding = value; }
+            get { return isBuilding; }
+
+        }
+
+        public void StartBuild(string structureType, Texture2D texture, int width, int height)
         {
 
             Structure structure = null;
             int buildTime = 0;
+            isBuilding = true;
 
             switch (structureType)
             {
@@ -49,10 +60,22 @@ namespace Legend.Core.Units {
             structure.DrawX = structure.WorldX;
             structure.DrawY = structure.WorldY;
 
+
             BuildObject buildObject = new BuildObject(structure, buildTime);
 
-
             buildList.Add(buildObject);
+
+            Renderer.AddGameSprite(structure);
+
+            structure.Active = true;
+
+        }
+
+        private void CompleteBuild(Structure structure)
+        {
+
+            isBuilding = false;
+            structure.Color = Color.SpringGreen;
 
         }
 
@@ -63,6 +86,14 @@ namespace Legend.Core.Units {
             {
 
                 buildObject.UpdateBuildTime(buildSpeed);
+
+                if (buildObject.buildComplete)
+                {
+
+                    CompleteBuild(buildObject.structure);
+                    
+
+                }
 
             }
 

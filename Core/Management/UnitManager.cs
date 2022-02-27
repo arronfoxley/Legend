@@ -1,4 +1,5 @@
 ﻿using FGame.Core;
+using Legend.Core.Units;
 using Legend.Objects;
 using Microsoft.Xna.Framework;
 using System;
@@ -115,7 +116,7 @@ namespace Legend.Core.Management {
 
         }
 
-        public void ResetPlayerUnits(List<Player> players)
+        public void UpdatePlayerUnitsForNextTurn(List<Player> players)
         {
 
             for (int i = 0; i < players.Count; i++)
@@ -123,6 +124,14 @@ namespace Legend.Core.Management {
 
                 for (int o = 0; o < players[i].Units.Count; o++)
                 {
+                  
+                    if (players[i].Units[o] is Pioneer)
+                    {
+
+                        Pioneer pioneer = (Pioneer)players[i].Units[o];
+                        pioneer.UpdateBuildList();
+
+                    }
 
                     players[i].Units[o].TurnActionReset();
 
