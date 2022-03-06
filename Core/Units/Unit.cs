@@ -3,6 +3,8 @@ using FGame.Core.Objects.Game;
 using FGame.Events;
 using FGame.Grid;
 using FGame.Objects;
+using Legend.Core.Display;
+using Legend.Core.Structures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -39,11 +41,30 @@ namespace Legend.Objects {
         internal int freeActionPoints = 5;
 
         private Boolean automatedMovement = false;
+        protected Boolean performingAction = false;
+
+        protected Structure home = null;
 
         public Unit(Texture2D texture, int width, int height):base(texture, width, height)
         {
 
-            this.drawLayer = Renderer.GAME_DEPTH_LAYER;
+            this.drawLayer = GameDrawDepthList.GAME_UNIT_DEPTH_LAYER;
+
+        }
+
+        public Structure Home
+        {
+
+            set { this.home = value; }
+            get { return home; }
+
+        }
+
+        public Boolean PerformingAction
+        {
+
+            get { return this.performingAction; }
+            set { this.performingAction = value; }
 
         }
 

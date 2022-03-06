@@ -7,76 +7,75 @@
   </Grid>
   <Terrain>
       <Forest>
-       <Resource CellX="4" CellY="0" TextureName="tlt"/>
-       <Resource CellX="5" CellY="0" TextureName="tct"/>
-       <Resource CellX="6" CellY="0" TextureName="trt"/>
-       <Resource CellX="4" CellY="1" TextureName="mlt"/>
-       <Resource CellX="5" CellY="1" TextureName="mct"/>
-       <Resource CellX="6" CellY="1" TextureName="mrt"/>
-        <Resource CellX="4" CellY="2" TextureName="blt"/>
-        <Resource CellX="5" CellY="2" TextureName="bct"/>
-        <Resource CellX="6" CellY="2" TextureName="brt"/>
+       <Resource CellX="4" CellY="0" Type="Wood" TextureName="Game/Forest/tlt"/>
+       <Resource CellX="5" CellY="0" Type="Wood" TextureName="Game/Forest/tct"/>
+       <Resource CellX="6" CellY="0" Type="Wood" TextureName="Game/Forest/trt"/>
+       <Resource CellX="4" CellY="1" Type="Wood" TextureName="Game/Forest/mlt"/>
+       <Resource CellX="5" CellY="1" Type="Wood" TextureName="Game/Forest/mct"/>
+       <Resource CellX="6" CellY="1" Type="Wood" TextureName="Game/Forest/mrt"/>
+        <Resource CellX="4" CellY="2" Type="Wood" TextureName="Game/Forest/blt"/>
+        <Resource CellX="5" CellY="2" Type="Wood" TextureName="Game/Forest/bct"/>
+        <Resource CellX="6" CellY="2" Type="Wood" TextureName="Game/Forest/brt"/>
       </Forest>
     <Forest>
-      <Resource CellX="4" CellY="8" TextureName="tlt"/>
-      <Resource CellX="5" CellY="8" TextureName="tct"/>
-      <Resource CellX="6" CellY="8" TextureName="trt"/>
-      <Resource CellX="4" CellY="9" TextureName="mlt"/>
-      <Resource CellX="5" CellY="9" TextureName="mct"/>
-      <Resource CellX="6" CellY="9" TextureName="mrt"/>
-      <Resource CellX="4" CellY="10" TextureName="blt"/>
-      <Resource CellX="5" CellY="10" TextureName="bct"/>
-      <Resource CellX="6" CellY="10" TextureName="brt"/>
+      <Resource CellX="4" CellY="8" Type="Wood" TextureName="Game/Forest/tlt"/>
+      <Resource CellX="5" CellY="8" Type="Wood" TextureName="Game/Forest/tct"/>
+      <Resource CellX="6" CellY="8" Type="Wood" TextureName="Game/Forest/trt"/>
+      <Resource CellX="4" CellY="9" Type="Wood" TextureName="Game/Forest/mlt"/>
+      <Resource CellX="5" CellY="9" Type="Wood" TextureName="Game/Forest/mct"/>
+      <Resource CellX="6" CellY="9" Type="Wood" TextureName="Game/Forest/mrt"/>
+      <Resource CellX="4" CellY="10" Type="Wood" TextureName="Game/Forest/blt"/>
+      <Resource CellX="5" CellY="10" Type="Wood" TextureName="Game/Forest/bct"/>
+      <Resource CellX="6" CellY="10" Type="Wood" TextureName="Game/Forest/brt"/>
     </Forest>
     <Forest>
-      <Resource CellX="8" CellY="0" TextureName="tlt"/>
-      <Resource CellX="9" CellY="0" TextureName="tct"/>
-      <Resource CellX="10" CellY="0" TextureName="trt"/>
-      <Resource CellX="8" CellY="1" TextureName="mlt"/>
-      <Resource CellX="9" CellY="1" TextureName="mct"/>
-      <Resource CellX="10" CellY="1" TextureName="mrt"/>
-      <Resource CellX="8" CellY="2" TextureName="blt"/>
-      <Resource CellX="9" CellY="2" TextureName="bct"/>
-      <Resource CellX="10" CellY="2" TextureName="brt"/>
+      <Resource CellX="8" CellY="0" Type="Wood" TextureName="Game/Forest/tlt"/>
+      <Resource CellX="9" CellY="0" Type="Wood" TextureName="Game/Forest/tct"/>
+      <Resource CellX="10" CellY="0" Type="Wood" TextureName="Game/Forest/trt"/>
+      <Resource CellX="8" CellY="1" Type="Wood" TextureName="Game/Forest/mlt"/>
+      <Resource CellX="9" CellY="1" Type="Wood" TextureName="Game/Forest/mct"/>
+      <Resource CellX="10" CellY="1" Type="Wood" TextureName="Game/Forest/mrt"/>
+      <Resource CellX="8" CellY="2" Type="Wood" TextureName="Game/Forest/blt"/>
+      <Resource CellX="9" CellY="2" Type="Wood" TextureName="Game/Forest/bct"/>
+      <Resource CellX="10" CellY="2" Type="Wood" TextureName="Game/Forest/brt"/>
     </Forest>
     <Forest>
-      <Resource CellX="8" CellY="4" TextureName="tlt"/>
-      <Resource CellX="9" CellY="4" TextureName="tct"/>
-      <Resource CellX="10" CellY="4" TextureName="trt"/>
-      <Resource CellX="8" CellY="5" TextureName="mlt"/>
-      <Resource CellX="9" CellY="5" TextureName="mct"/>
-      <Resource CellX="10" CellY="5" TextureName="mrt"/>
-      <Resource CellX="8" CellY="6" TextureName="blt"/>
-      <Resource CellX="9" CellY="6" TextureName="bct"/>
-      <Resource CellX="10" CellY="6" TextureName="brt"/>
+      <Resource CellX="7" CellY="4" Type="Wood" TextureName="Game/Forest/tlt"/>
+      <Resource CellX="8" CellY="4" Type="Wood" TextureName="Game/Forest/tct"/>
+      <Resource CellX="9" CellY="4" Type="Wood" TextureName="Game/Forest/trt"/>
+      <Resource CellX="7" CellY="5" Type="Wood" TextureName="Game/Forest/mlt"/>
+      <Resource CellX="8" CellY="5" Type="Wood" TextureName="Game/Forest/mct"/>
+      <Resource CellX="9" CellY="5" Type="Wood" TextureName="Game/Forest/mrt"/>
+      <Resource CellX="7" CellY="6" Type="Wood" TextureName="Game/Forest/blt"/>
+      <Resource CellX="8" CellY="6" Type="Wood" TextureName="Game/Forest/bct"/>
+      <Resource CellX="9" CellY="6" Type="Wood" TextureName="Game/Forest/brt"/>
     </Forest>
     <Forest>
-      <Resource CellX="8" CellY="8" TextureName="tlt"/>
-      <Resource CellX="9" CellY="8" TextureName="tct"/>
-      <Resource CellX="10" CellY="8" TextureName="trt"/>
-      <Resource CellX="8" CellY="9" TextureName="mlt"/>
-      <Resource CellX="9" CellY="9" TextureName="mct"/>
-      <Resource CellX="10" CellY="9" TextureName="mrt"/>
-      <Resource CellX="8" CellY="10" TextureName="blt"/>
-      <Resource CellX="9" CellY="10" TextureName="bct"/>
-      <Resource CellX="10" CellY="10" TextureName="brt"/>
+      <Resource CellX="8" CellY="8" Type="Wood" TextureName="Game/Forest/tlt"/>
+      <Resource CellX="9" CellY="8" Type="Wood" TextureName="Game/Forest/tct"/>
+      <Resource CellX="10" CellY="8" Type="Wood" TextureName="Game/Forest/trt"/>
+      <Resource CellX="8" CellY="9" Type="Wood" TextureName="Game/Forest/mlt"/>
+      <Resource CellX="9" CellY="9" Type="Wood" TextureName="Game/Forest/mct"/>
+      <Resource CellX="10" CellY="9" Type="Wood" TextureName="Game/Forest/mrt"/>
+      <Resource CellX="8" CellY="10" Type="Wood" TextureName="Game/Forest/blt"/>
+      <Resource CellX="9" CellY="10" Type="Wood" TextureName="Game/Forest/bct"/>
+      <Resource CellX="10" CellY="10" Type="Wood" TextureName="Game/Forest/brt"/>
     </Forest>
       <Mountain>
-        <Resource CellX="3" CellY="4" TextureName="mtl"/>
-        <Resource CellX="4" CellY="4" TextureName="mtc"/>
-        <Resource CellX="5" CellY="4" TextureName="mtr"/>
-        <Resource CellX="3" CellY="5" TextureName="mlm"/>
-        <Resource CellX="4" CellY="5" TextureName="mcm"/>
-        <Resource CellX="5" CellY="5" TextureName="mrm"/>
-        <Resource CellX="3" CellY="6" TextureName="mbl"/>
-        <Resource CellX="4" CellY="6" TextureName="mbc"/>
-        <Resource CellX="5" CellY="6" TextureName="mbr"/>
+        <Resource CellX="4" CellY="4" Type="Ore" TextureName="Game/Mountain/mtl"/>
+        <Resource CellX="5" CellY="4" Type="Ore" TextureName="Game/Mountain/mtc"/>
+        <Resource CellX="6" CellY="4" Type="Ore" TextureName="Game/Mountain/mtr"/>
+        <Resource CellX="4" CellY="5" Type="Ore" TextureName="Game/Mountain/mlm"/>
+        <Resource CellX="5" CellY="5" Type="Ore" TextureName="Game/Mountain/mcm"/>
+        <Resource CellX="6" CellY="5" Type="Ore" TextureName="Game/Mountain/mrm"/>
+        <Resource CellX="4" CellY="6" Type="Ore" TextureName="Game/Mountain/mbl"/>
+        <Resource CellX="5" CellY="6" Type="Ore" TextureName="Game/Mountain/mbc"/>
+        <Resource CellX="6" CellY="6" Type="Ore" TextureName="Game/Mountain/mbr"/>
       </Mountain>
   </Terrain>
   <Terrain-Shadow>
-    <Mountain>
-      <Resource CellX="5" CellY="4" TextureName="shadMountTop"/>
-      <Resource CellX="5" CellY="5" TextureName="shadMountBottom"/>
-    </Mountain>
+      <Shadow CellX="6" CellY="4" TextureName="Game/Shadow/shadMountTop"/>
+      <Shadow CellX="6" CellY="5" TextureName="Game/Shadow/shadMountMiddle"/>
+      <Shadow CellX="6" CellY="6" TextureName="Game/Shadow/shadMountBottom"/>
   </Terrain-Shadow>
 </Map>

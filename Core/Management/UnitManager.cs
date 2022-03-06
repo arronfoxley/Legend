@@ -1,7 +1,9 @@
 ﻿using FGame.Core;
+using FGame.Grid;
 using Legend.Core.Units;
 using Legend.Objects;
 using Microsoft.Xna.Framework;
+using PathFinding.PathFinding;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,9 +19,14 @@ namespace Legend.Core.Management {
         private Boolean automationMode = false;
         private int autoUnitNumber = 0;
 
-        public UnitManager()
+        private PathFinder pathFinder;
+        private Grid grid;
+
+        public UnitManager(PathFinder pathFinder, Grid grid)
         {
 
+            this.pathFinder = pathFinder;
+            this.grid = grid;
 
         }
 
@@ -130,6 +137,21 @@ namespace Legend.Core.Management {
 
                         Pioneer pioneer = (Pioneer)players[i].Units[o];
                         pioneer.UpdateBuildList();
+
+                    }
+
+                    if (players[i].Units[o] is LumberJack)
+                    {
+
+                        LumberJack lumberJack = (LumberJack)players[i].Units[o];
+
+                        if (lumberJack.UpdateActions())
+                        {
+
+                            List<Cell> path = pathFinder.BreadthFirstSearch(grid.GetCellByXY(lumberJack.gatherTarget.cellX, lumberJack.gatherTarget.cellY), grid.GetCellByXY(lumberJack.Home.cellX, lumberJack.Home.cellY));
+                            lumberJack.PrepForMovememnt(path);
+
+                        };
 
                     }
 

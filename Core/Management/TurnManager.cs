@@ -84,7 +84,6 @@ namespace Legend {
                 if (!players[i].IsTurnComplete)
                 {
 
-
                     turnComplete = false;
                     break;
 

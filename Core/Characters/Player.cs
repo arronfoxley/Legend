@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Legend.Core.Characters;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,10 +11,14 @@ namespace Legend.Objects {
         private Boolean isTurnComplete = false;
         private string username = "";
 
+        private PlayerResources resources;
+
         public Player(string username)
         {
 
             this.username = username;
+
+            resources = new PlayerResources();
 
         }
 
@@ -50,6 +55,13 @@ namespace Legend.Objects {
 
             get { return this.units; }
             set { this.units = value; }
+
+        }
+
+        public PlayerResources Resources
+        {
+
+            get { return this.resources; }
 
         }
 
