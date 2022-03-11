@@ -4,6 +4,7 @@ using FGame.Core.Objects.Game;
 using FGame.Events.MouseEvents;
 using FGame.Grid;
 using FGame.Menus;
+using Legend.Core.Data;
 using Legend.Core.Display;
 using Legend.Core.Management;
 using Legend.Core.Resources;
@@ -36,9 +37,24 @@ namespace Legend {
         Vector2 screenPosition;
 
         private Dictionary<Cell,Terrain> resources = new Dictionary<Cell, Terrain>();
-        private List< Structure> structures = new List<Structure>();
+
+        private List<UnitData> unitData;
+
+        private List<MapData> mapData;
+
+        private GridData gridData;
+
+        private Dictionary<int, TextureData> textureList;
 
         private int cellSize = 48;
+
+        private List<Structure> structures = new List<Structure>();
+
+        private string texturesXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/TextureList.xml";
+        private string unitXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/Units.xml";
+        private string terrianXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/Terrain.xml";
+        private string gridXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/Grid.xml";
+        private string mapXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/Map.xml";
 
         public Game1()
         {
@@ -50,8 +66,7 @@ namespace Legend {
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+          
             Renderer.GraphicsDeviceManager.PreferredBackBufferWidth = 528;
             Renderer.GraphicsDeviceManager.PreferredBackBufferHeight = 528;
 
@@ -65,10 +80,8 @@ namespace Legend {
       
             InitCamera();
             InitInputs();
-            LoadXML();
-            DrawMap();
+            ParseXML();
             CreateManagers();
-            CreateUIButtons();
             CreateGameButtons();
             CreatePlayers();
             CreateUnits();
@@ -96,149 +109,115 @@ namespace Legend {
 
         }
 
-        private void LoadXML()
+        private void ParseXML()
         {
 
-            string xmlURL = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/gridXML/testGrid.xml";
-            XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.Load(xmlURL);
+            textureList = XMLParser.ParseTexturesXML(texturesXMLPath);
 
-            //GRID
+            gridData = XMLParser.ParseGridXML(gridXMLPath);
 
-            XmlNode gridNode = xmlDocument.SelectSingleNode("Map/Grid/Data");
+            CreateGrid(gridData);
 
-            int cellsX = int.Parse(gridNode.Attributes.GetNamedItem("CellsX").InnerText);
-            int cellsY = int.Parse(gridNode.Attributes.GetNamedItem("CellsY").InnerText);
-            int cellWidth = int.Parse(gridNode.Attributes.GetNamedItem("CellWidth").InnerText);
-            int cellHeight = int.Parse(gridNode.Attributes.GetNamedItem("CellHeight").InnerText);
+            mapData = XMLParser.ParseMapXML(mapXMLPath);
 
-            //XmlNodeList cellList = xmlDocument.SelectNodes("Grid/Cells/Cell");
+            CreateMap(mapData);
 
-            grid = new Grid(cellsX * cellWidth, cellsY * cellHeight, cellsX, cellsY, cellWidth, cellHeight);
+            unitData = XMLParser.ParseUnitXML(unitXMLPath);           
 
-            grid.Generate();
+            List<TerrainCellData> terrainCellData =  XMLParser.ParseTerrainCellXML(terrianXMLPath);
 
-            pathFinder = new PathFinder(grid);
+            CreateTerrain(terrainCellData);           
 
-            //RESOURCES
+        }
 
-            XmlNodeList forestNodeList = xmlDocument.SelectNodes("Map/Terrain/Forest/Resource");
+        private void CreateTerrain(List<TerrainCellData> terrainCellData)
+        {
 
-            foreach (XmlNode node in forestNodeList)
+            foreach (TerrainCellData tcd in terrainCellData)
             {
-                
-                int cellX = int.Parse(node.Attributes.GetNamedItem("CellX").InnerText);
-                int cellY = int.Parse(node.Attributes.GetNamedItem("CellY").InnerText);
-                string type = node.Attributes.GetNamedItem("Type").InnerText;
-                string textureName = node.Attributes.GetNamedItem("TextureName").InnerText;
 
-                Terrain resource = new Terrain(Content.Load<Texture2D>(textureName),cellWidth,cellHeight,type);
+                Terrain resource = new Terrain(Content.Load<Texture2D>(textureList[tcd.textureID].textureName), cellSize, cellSize, tcd.type);
 
-                resource.cellX = cellX;
-                resource.cellY = cellY;
+                resource.cellX = tcd.cellX;
+                resource.cellY = tcd.cellY;
 
-                resource.WorldX = cellSize * cellX;
-                resource.WorldY = cellSize * cellY;
+                resource.WorldX = cellSize * tcd.cellX;
+                resource.WorldY = cellSize * tcd.cellY;
 
                 resource.DrawX = resource.WorldX;
                 resource.DrawY = resource.WorldY;
+
+                if (!tcd.isPassable)
+                {
+
+                    grid.GetCellByXY(tcd.cellX, tcd.cellY).Passable = false;
+
+                }
+
+                switch (resource.type)
+                {
+
+                    case "Ore": resource.DrawLayer = GameDrawDepthList.GAME_MOUNTAIN_DEPTH_LAYER; break;
+                    case "Wood": resource.DrawLayer = GameDrawDepthList.GAME_RESOURCE_DEPTH_LAYER; break;
+
+                }
 
                 Renderer.AddGameSprite(resource);
 
                 resource.Active = true;
 
-                resources.Add( grid.GetCellByXY(cellX,cellY), resource );
+                if (tcd.shadowTextureID != 0)
+                {
 
+                    GameSprite shadow = new GameSprite(Content.Load<Texture2D>(textureList[tcd.shadowTextureID].textureName), cellSize, cellSize);
 
-            }
+                    shadow.WorldX = cellSize * resource.cellX;
+                    shadow.WorldY = cellSize * resource.cellY;
 
-            XmlNodeList mountainNodeList = xmlDocument.SelectNodes("Map/Terrain/Mountain/Resource");
+                    shadow.DrawX = shadow.WorldX;
+                    shadow.DrawY = shadow.WorldY;
 
-            foreach (XmlNode node in mountainNodeList)
-            {
+                    shadow.DrawLayer = GameDrawDepthList.GAME_MOUNTAIN_SHADOW_DEPTH_LAYER;
+                    shadow.Alpha = 0.5f;
 
-                int cellX = int.Parse(node.Attributes.GetNamedItem("CellX").InnerText);
-                int cellY = int.Parse(node.Attributes.GetNamedItem("CellY").InnerText);
-                string type = node.Attributes.GetNamedItem("Type").InnerText;
-                string textureName = node.Attributes.GetNamedItem("TextureName").InnerText;
+                    Renderer.AddGameSprite(shadow);
 
-                Terrain resource = new Terrain(Content.Load<Texture2D>(textureName), cellWidth, cellHeight, type);
+                    shadow.Active = true;
 
-                resource.cellX = cellX;
-                resource.cellY = cellY;
+                }
 
-                resource.WorldX = cellSize * cellX;
-                resource.WorldY = cellSize * cellY;
-
-                resource.DrawX = resource.WorldX;
-                resource.DrawY = resource.WorldY;
-
-                resource.DrawLayer = GameDrawDepthList.GAME_MOUNTAIN_DEPTH_LAYER;
-
-                //Set mountain cell as not passable
-                grid.GetCellByXY(cellX, cellY).Passable = false;
-
-                Renderer.AddGameSprite(resource);
-
-                resource.Active = true;
-
-                resources.Add(grid.GetCellByXY(cellX, cellY), resource);
-
-            }
-
-            //Shadow list
-
-            XmlNodeList shadowNodeList = xmlDocument.SelectNodes("Map/Terrain-Shadow/Shadow");
-
-            foreach (XmlNode node in shadowNodeList)
-            {
-
-                Debug.WriteLine(node);
-
-                int cellX = int.Parse(node.Attributes.GetNamedItem("CellX").InnerText);
-                int cellY = int.Parse(node.Attributes.GetNamedItem("CellY").InnerText);
-                string textureName = node.Attributes.GetNamedItem("TextureName").InnerText;
-
-                GameSprite shadow = new GameSprite(Content.Load<Texture2D>(textureName), cellWidth, cellHeight);
-
-                shadow.WorldX = cellSize * cellX;
-                shadow.WorldY = cellSize * cellY;
-
-                Debug.WriteLine(shadow.WorldX);
-
-                shadow.DrawX = shadow.WorldX;
-                shadow.DrawY = shadow.WorldY;
-
-                shadow.DrawLayer = GameDrawDepthList.GAME_MOUNTAIN_SHADOW_DEPTH_LAYER;
-                shadow.Alpha = 0.5f;
-
-                Renderer.AddGameSprite(shadow);
-
-                shadow.Active = true;
-
+                resources.Add(grid.GetCellByXY(tcd.cellX, tcd.cellY), resource);
 
             }
 
         }
 
-        private void DrawMap()
+        private void CreateGrid(GridData gridData)
         {
 
-            Random random = new Random();
+            grid = new Grid(gridData.cellsX * gridData.cellSize , gridData.cellsY * gridData.cellSize, gridData.cellsX, gridData.cellsY, gridData.cellSize, gridData.cellSize);
 
-            foreach (KeyValuePair<int[],Cell> kvp in grid.Cells)
-            {
+            cellSize = gridData.cellSize;
 
-                int i = random.Next(1, 6);
+            grid.Generate();
 
-                Tile tile = new Tile(Content.Load<Texture2D>("Game/Field/field" + i), kvp.Value.Width, kvp.Value.Height);
+            pathFinder = new PathFinder(grid);
 
-                tile.Color = new Color(105, 137, 105);              
+        }
+
+        private void CreateMap(List<MapData> mapData)
+        {
+
+            foreach(MapData md in mapData){
+
+                Tile tile = new Tile(Content.Load<Texture2D>(textureList[md.textureId].textureName), cellSize, cellSize);
+
+                tile.Color = new Color(105, 137, 105);
 
                 tile.Active = true;
 
-                tile.WorldX = kvp.Value.GridX * kvp.Value.Width;
-                tile.WorldY = kvp.Value.GridY * kvp.Value.Height;
+                tile.WorldX = md.cellX * cellSize;
+                tile.WorldY = md.cellY * cellSize;
                 tile.DrawX = tile.WorldX;
                 tile.DrawY = tile.WorldY;
 
@@ -247,38 +226,18 @@ namespace Legend {
                 //tile.Color = Color.Red;
 
                 tile.AddEventListener(MouseEvent.LEFT_CLICK, OnClick);
-                tile.AddEventListener(MouseEvent.RIGHT_CLICK, OnClick);               
+                tile.AddEventListener(MouseEvent.RIGHT_CLICK, OnClick);
 
             }
 
         }
+        //TODO Dynamically generate map data from XML
 
         private void CreateManagers()
         {
            
             unitManager = new UnitManager(pathFinder,grid);
             turnManager = new TurnManager();
-
-        }
-
-        private void CreateUIButtons()
-        {
-
-            Button passTurnButton = new Button(Content.Load<Texture2D>("Button/buttonBg"), 64, 16, "UI");
-            passTurnButton.Color = Color.Red;
-
-            passTurnButton.OverColor = Color.DarkRed;
-            passTurnButton.OutColor = Color.Red;
-
-            passTurnButton.Name = "passTurnButton";
-
-            passTurnButton.Active = true;
-
-            Renderer.AddUISprite(passTurnButton);      
-
-            passTurnButton.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
-            passTurnButton.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
-            passTurnButton.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);     
 
         }
 
@@ -299,6 +258,18 @@ namespace Legend {
 
         }
 
+        private void CreateGameButtons()
+        {
+
+            CreateButton("Button/buttonBg", 64, 16, "passTurnButton" ,"UI", true, Color.Red, Color.Black);
+            CreateButton("Button/buttonBg", 64, 16, "buildSettlementButton", "pioneer_action", false, Color.LightBlue, Color.Black);
+            CreateButton("Button/buttonBg", 64, 16, "gatherActionButton", "lumberjack_action", false, Color.CornflowerBlue, Color.Black);
+            CreateButton("Button/buttonBg", 64, 16, "setHomeButton", "all_action", false, Color.LightGray, Color.Black);
+            CreateButton("Button/buttonBg", 64, 16, "cancelMovementButton", "all_action", false, Color.Red, Color.Black);
+            CreateButton("Button/buttonBg", 64, 16, "closeButton", "close", false, Color.DarkRed, Color.Black);
+
+        }
+
         private void CreateUnit(string unitType, int cellX, int cellY)
         {
 
@@ -307,9 +278,9 @@ namespace Legend {
             switch (unitType)
             {
 
-                case "pioneer": unit = new Pioneer(Content.Load<Texture2D>("Game/Units/pioneer"), cellSize, cellSize) ; break;
-                case "lumberjack": unit = new LumberJack(Content.Load<Texture2D>("Game/Units/lumberjack"), cellSize, cellSize); break;
-                case "miner": unit = new Miner(Content.Load<Texture2D>("Game/Units/miner"), cellSize, cellSize); break;
+                case "pioneer": unit = new Pioneer(Content.Load<Texture2D>(textureList[unitData[0].textureId].textureName), cellSize, cellSize) ; break;
+                case "lumberjack": unit = new LumberJack(Content.Load<Texture2D>(textureList[unitData[1].textureId].textureName), cellSize, cellSize); break;
+                case "miner": unit = new Miner(Content.Load<Texture2D>(textureList[unitData[2].textureId].textureName), cellSize, cellSize); break;
 
             }
 
@@ -333,92 +304,27 @@ namespace Legend {
 
         }
 
-        private void CreateGameButtons()
+        private void CreateButton(string textureName, int width, int height, string buttonName, string set, Boolean active, Color color, Color overColor)
         {
 
-            //Pioneer Actions
-            //Build Settlement
-            Button buildSettlementButton = new Button(Content.Load<Texture2D>("Button/buttonBg"), 64, 16, "pioneer_action");
-            //Build Road
-            //Cultivate Land
-            //Cancel Movement
+            Button button = new Button(Content.Load<Texture2D>(textureName), 64, 16, set);
 
-            //Lumberjack Actions
-            //Gather Lumber
-            Button gatherActionButton = new Button(Content.Load<Texture2D>("Button/buttonBg"), 64, 16, "lumberjack_action");
-            //Cancel Movement
+            buttons.Add(button);
 
-            Button setHomeButton = new Button(Content.Load<Texture2D>("Button/buttonBg"), 64, 16, "all_action");
-            Button cancelMovement = new Button(Content.Load<Texture2D>("Button/buttonBg"), 64, 16, "all_action");           
-            Button closeButton = new Button(Content.Load<Texture2D>("Button/buttonBg"), 64, 16, "close");
+            button.Color = color;
+            button.OutColor = color;
+            button.OverColor = overColor;
 
-            buttons.Add(buildSettlementButton);
-            buttons.Add(gatherActionButton);
-            buttons.Add(cancelMovement);
-            buttons.Add(setHomeButton);
-            buttons.Add(closeButton);
+            button.Name = buttonName;
 
-            buildSettlementButton.Color = Color.LightBlue;
-            gatherActionButton.Color = Color.CornflowerBlue;
-            setHomeButton.Color = Color.LightGray;
-            cancelMovement.Color = Color.Red;
-            closeButton.Color = Color.DarkRed;
+            button.Active = active;
 
-            buildSettlementButton.OutColor = buildSettlementButton.Color;
-            gatherActionButton.OutColor = gatherActionButton.Color;
-            setHomeButton.OutColor = setHomeButton.Color;
-            cancelMovement.OutColor = cancelMovement.Color;
-            closeButton.OutColor = closeButton.Color;
+            Renderer.AddUISprite(button);
 
-            buildSettlementButton.OverColor = Color.Black;
-            gatherActionButton.OverColor = Color.Black;
-            setHomeButton.OverColor = Color.Black;
-            cancelMovement.OverColor = Color.Black;
-            closeButton.OverColor = Color.Black;
+            button.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
+            button.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
+            button.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
 
-            buildSettlementButton.Name = "buildSettlementButton";
-            gatherActionButton.Name = "gatherActionButton";
-            setHomeButton.Name = "setHomeButton";
-            cancelMovement.Name = "cancelMovementButton";
-            closeButton.Name = "closeButton";
-
-            Renderer.AddUISprite(buildSettlementButton);
-            Renderer.AddUISprite(gatherActionButton);
-            Renderer.AddUISprite(cancelMovement);
-            Renderer.AddUISprite(closeButton);
-            Renderer.AddUISprite(setHomeButton);
-
-            buildSettlementButton.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
-            buildSettlementButton.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
-            buildSettlementButton.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
-
-            gatherActionButton.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
-            gatherActionButton.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
-            gatherActionButton.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
-
-            cancelMovement.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
-            cancelMovement.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
-            cancelMovement.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
-
-            closeButton.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
-            closeButton.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
-            closeButton.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
-
-            setHomeButton.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
-            setHomeButton.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
-            setHomeButton.AddEventListener(MouseEvent.LEFT_CLICK, OnButtonClick);
-
-        }
-
-        private void OnOver(MouseEvent e)
-        {
-
-
-        }
-
-        private void OnOut(MouseEvent e)
-        {
- 
         }
 
         private void OnButtonClick(MouseEvent e)
@@ -458,7 +364,7 @@ namespace Legend {
 
             if (button.Name.Contains("setHomeButton")){
 
-                //TODO Set units home town
+                
                 Debug.WriteLine("Select Structure");
 
                 Boolean test = false;
@@ -519,7 +425,6 @@ namespace Legend {
 
                 HideMenu();
 
-                //TODO Check if cell contains wood resource
                 LumberJack lumberJack = (LumberJack )unitManager.ActiveUnit;               
                 Cell cell = grid.GetCellByXY(lumberJack.WorldX / cellSize, lumberJack.WorldY / cellSize);
                 Terrain terrain = null;
@@ -660,10 +565,16 @@ namespace Legend {
 
                             if (!unitManager.ActiveUnit.IsMoving && !unitManager.ActiveUnit.PerformingAction)
                             {
-                                
-                                MoveUnit(grid.GetCellByXY(unitManager.ActiveUnit.WorldX / grid.CellWidth, unitManager.ActiveUnit.WorldY / grid.CellHeight), 
-                                    grid.GetCellByXY((int)(e.Position.X / grid.CellWidth), (int)(e.Position.Y / grid.CellHeight)));
-                                                                  
+
+                                Cell startCell = grid.GetCellByXY(unitManager.ActiveUnit.WorldX / grid.CellWidth, unitManager.ActiveUnit.WorldY / grid.CellHeight);
+                                Cell destinationCell = grid.GetCellByXY((int)(e.Position.X / grid.CellWidth), (int)(e.Position.Y / grid.CellHeight));
+
+                                //pick new path
+                                List<Cell> path = pathFinder.BreadthFirstSearch(startCell, destinationCell);
+
+                                unitManager.ActiveUnit.PrepForMovememnt(path);
+                                unitManager.ActiveUnit.TurnStarted = true;
+
                             }
 
                         }
@@ -713,17 +624,6 @@ namespace Legend {
                 }
 
             }
-
-        }
-
-        private void MoveUnit(Cell startCell, Cell destinationCell)
-        {
-
-            //pick new path
-            List<Cell> path = pathFinder.BreadthFirstSearch(startCell, destinationCell);
-
-            unitManager.ActiveUnit.PrepForMovememnt(path);
-            unitManager.ActiveUnit.TurnStarted = true;
 
         }
 
@@ -779,19 +679,10 @@ namespace Legend {
         {
 
             Renderer.GraphicsDeviceManager.GraphicsDevice.Clear(Color.Black);
-
-            if (Renderer.Camera.Target != null)
-            {
-
-                //Renderer.Camera.LookAt(new Vector2(Renderer.Camera.Target.WorldX, Renderer.Camera.Target.WorldY));
-
-            }
-
             Renderer.Draw();
-
-            base.Draw(gameTime);
-            
+            base.Draw(gameTime);           
 
         }
     }
+
 }

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Units>
+  <Unit Type="Pioneer" TextureID="7"/>
+  <Unit Type="LumberJack" TextureID="8"/>
+  <Unit Type="Miner" TextureID="9"/>
+</Units>

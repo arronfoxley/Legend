@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Textures>
+  <Texture ID="1" TextureName="Field_1" TexturePath="Game/Field/field1"/>
+  <Texture ID="2" TextureName="Field_2" TexturePath="Game/Field/field2"/>
+  <Texture ID="3" TextureName="Field_3" TexturePath="Game/Field/field3"/>
+  <Texture ID="4" TextureName="Field_4" TexturePath="Game/Field/field4"/>
+  <Texture ID="5" TextureName="Field_5" TexturePath="Game/Field/field5"/>
+  <Texture ID="6" TextureName="Field_6" TexturePath="Game/Field/field6"/>
+  <Texture ID="7" TextureName="Pioneer" TexturePath="Game/Units/pioneer"/>
+  <Texture ID="8" TextureName="Lumerjack" TexturePath="Game/Units/lumberjack"/>
+  <Texture ID="9" TextureName="Miner" TexturePath="Game/Units/miner"/>
+  <Texture ID="10" TextureName="Tlt" TexturePath="Game/Forest/tlt"/>
+  <Texture ID="11" TextureName="Tct" TexturePath="Game/Forest/tct"/>
+  <Texture ID="12" TextureName="Trt" TexturePath="Game/Forest/trt"/>
+  <Texture ID="13" TextureName="Mlt" TexturePath="Game/Forest/mlt"/>
+  <Texture ID="14" TextureName="Mct" TexturePath="Game/Forest/mct"/>
+  <Texture ID="15" TextureName="Mrt" TexturePath="Game/Forest/mrt"/>
+  <Texture ID="16" TextureName="Blt" TexturePath="Game/Forest/blt"/>
+  <Texture ID="17" TextureName="Bct" TexturePath="Game/Forest/bct"/>
+  <Texture ID="18" TextureName="Brt" TexturePath="Game/Forest/brt"/>
+  <Texture ID="19" TextureName="Mtl" TexturePath="Game/Mountain/mtl"/>
+  <Texture ID="20" TextureName="Mtc" TexturePath="Game/Mountain/mtc"/>
+  <Texture ID="21" TextureName="Mtr" TexturePath="Game/Mountain/mtr"/>
+  <Texture ID="22" TextureName="Mlm" TexturePath="Game/Mountain/mlm"/>
+  <Texture ID="23" TextureName="Mcm" TexturePath="Game/Mountain/mcm"/>
+  <Texture ID="24" TextureName="Mrm" TexturePath="Game/Mountain/mrm"/>
+  <Texture ID="25" TextureName="Mbl" TexturePath="Game/Mountain/mbl"/>
+  <Texture ID="26" TextureName="Mbc" TexturePath="Game/Mountain/mbc"/>
+  <Texture ID="27" TextureName="Mbr" TexturePath="Game/Mountain/mbr"/>
+  <Texture ID="28" TextureName="Smt" TexturePath="Game/Shadow/shadMountTop"/>
+  <Texture ID="29" TextureName="Smm" TexturePath="Game/Shadow/shadMountMiddle"/>
+  <Texture ID="30" TextureName="Smb" TexturePath="Game/Shadow/shadMountBottom"/>
+</Textures>
