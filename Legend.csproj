@@ -20,8 +20,4 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FGame\FGame.csproj" />
-    <ProjectReference Include="..\PathFinding\PathFinding.csproj" />
-  </ItemGroup>
 </Project>

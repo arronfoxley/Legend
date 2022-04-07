@@ -1,15 +1,3 @@
-<<<<<<< Updated upstream
-﻿using FGame.Camera;
-using FGame.Core;
-using FGame.Events.MouseEvents;
-using FGame.Grid;
-using FGame.Objects;
-=======
-﻿using FGame.Core;
-using FGame.Core.Objects.Game;
-using FGame.Events.MouseEvents;
-using FGame.Grid;
-using FGame.Menus;
 using Legend.Core;
 using Legend.Core.Actions;
 using Legend.Core.Data;
@@ -19,56 +7,29 @@ using Legend.Core.Resources;
 using Legend.Core.Structures;
 using Legend.Core.Tiles;
 using Legend.Core.Units;
->>>>>>> Stashed changes
 using Legend.Objects;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using PathFinding.PathFinding;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Legend {
     public class Game1 : Game {
 
-<<<<<<< Updated upstream
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-=======
-        private Grid grid;
-
-        List<Button> buttons = new List<Button>();
-        List<Button> activeButtons = new List<Button>();
-        Vector2 screenPosition;
-
-        private Dictionary<Cell, Terrain> resources = new Dictionary<Cell, Terrain>();
->>>>>>> Stashed changes
 
         private DisplayList displayList;
         private MouseInput mi;
         private MonoCamera2D camera;
         private Grid grid;
 
-<<<<<<< Updated upstream
         private PathFinder pathFinder;
-=======
-        private Dictionary<Cell, Tile> map = new Dictionary<Cell, Tile>();
-
-        private int cellSize;
->>>>>>> Stashed changes
 
         private Player player;
         private Enemy enemy;
 
-<<<<<<< Updated upstream
-        private TurnManager turnManager;
-=======
         private readonly string texturesXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/TextureList.xml";
         private readonly string unitXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/Units.xml";
         private readonly string terrianXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/Terrain.xml";
         private readonly string gridXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/Grid.xml";
         private readonly string mapXMLPath = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/Assets/xml/Map.xml";
->>>>>>> Stashed changes
 
         public Game1()
         {
@@ -78,32 +39,16 @@ namespace Legend {
         }
         protected override void Initialize()
         {
-<<<<<<< Updated upstream
-            // TODO: Add your initialization logic here
-=======
 
             Renderer.GraphicsDeviceManager.PreferredBackBufferWidth = 528;
             Renderer.GraphicsDeviceManager.PreferredBackBufferHeight = 528;
 
             Renderer.GraphicsDeviceManager.ApplyChanges();
->>>>>>> Stashed changes
 
             base.Initialize();
         }
         protected override void LoadContent()
         {
-<<<<<<< Updated upstream
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            InitCamera();
-            InitInputs();
-            LoadGrid();
-            DrawMap();
-            CreatePlayer();
-            CreateEnemy();
-            CreateTurnManager();
-        }
-=======
 
             InitCamera();
             InitInputs();
@@ -116,21 +61,11 @@ namespace Legend {
 
             UnitManager.Grid = grid;
             UnitManager.Units = TurnManager.ActiveCharacter.Units;
->>>>>>> Stashed changes
 
         }
         private void InitCamera()
         {
 
-<<<<<<< Updated upstream
-            Viewport gPort = new Viewport();
-            gPort.X = 0;
-            gPort.Y = 0;
-            gPort.Width = 1280;
-            gPort.Height = 800;
-            gPort.MinDepth = 0;
-            gPort.MaxDepth = 1;
-=======
             Renderer.InitSpriteBatcher();
             Renderer.InitCamera(0, 0, 528, 528);
             Renderer.InitViewports(0, 0, 528, 528);
@@ -196,44 +131,27 @@ namespace Legend {
 
                     case "Mountain": resource.GameSprite.DrawLayer = GameDrawDepthList.GAME_MOUNTAIN_DEPTH_LAYER; break;
                     case "Wood": resource.GameSprite.DrawLayer = GameDrawDepthList.GAME_RESOURCE_DEPTH_LAYER; break;
-                    case "Ore": resource.GameSprite.DrawLayer = GameDrawDepthList.GAME_RESOURCE_DEPTH_LAYER; break;
->>>>>>> Stashed changes
+                    case "Ore":
+                    resource.GameSprite.DrawLayer = GameDrawDepthList.GAME_RESOURCE_DEPTH_LAYER; break;
 
-            displayList = new DisplayList(gPort, _graphics, _spriteBatch);
 
-<<<<<<< Updated upstream
-            _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 800;
+                    Renderer.AddGameSprite(resource.GameSprite);
 
-            _graphics.ApplyChanges();
-=======
-                Renderer.AddGameSprite(resource.GameSprite);
+                    resource.GameSprite.Active = true;
 
-                resource.GameSprite.Active = true;
+                    if (tcd.shadowTextureID != 0)
+                    {
 
-                if (tcd.shadowTextureID != 0)
-                {
->>>>>>> Stashed changes
+                        shadow.WorldX = cellSize * resource.Cell.GridX;
+                        shadow.WorldY = cellSize * resource.Cell.GridY;
 
-            camera = new MonoCamera2D(displayList.gPort);
+                    }
 
-<<<<<<< Updated upstream
-            displayList.Camera = camera;
-=======
-                    shadow.WorldX = cellSize * resource.Cell.GridX;
-                    shadow.WorldY = cellSize * resource.Cell.GridY;
->>>>>>> Stashed changes
+                }
 
-            displayList.Camera.LookAt(new Vector2(640, 400));
+            }
 
         }
-<<<<<<< Updated upstream
-
-        private void InitInputs()
-        {
-
-            mi = new MouseInput(this.Window);
-=======
         private void CreateGrid(GridData gridData)
         {
 
@@ -298,7 +216,6 @@ namespace Legend {
 
             Button passTurnButton = CreateButton("Button/buttonBg", 64, 16, "passTurnButton", "UI", true, Color.Red, Color.Black);
             passTurnButton.AddEventListener(MouseEvent.LEFT_CLICK, PassTurnButtonClick);
->>>>>>> Stashed changes
 
             Button buildCampButton = CreateButton("Button/buttonBg", 64, 16, "buildCampButton", "pioneer_action", false, Color.LightBlue, Color.Black);
             buildCampButton.AddEventListener(MouseEvent.LEFT_CLICK, BuildCampButtonClick);
@@ -306,23 +223,6 @@ namespace Legend {
             Button buildLumberMillButton = CreateButton("Button/buttonBg", 64, 16, "buildLumberMillButton", "engineer_action", false, Color.Orange, Color.Black);
             buildLumberMillButton.AddEventListener(MouseEvent.LEFT_CLICK, BuildLumberMillButtonClick);
 
-<<<<<<< Updated upstream
-        private void LoadGrid()
-        {
-
-            string xmlURL = "C:/Users/arron/source/repos/arronfoxley/Legend/Content/gridXML/testGrid.xml";
-            XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.Load(xmlURL);
-
-            XmlNode dataNode = xmlDocument.SelectSingleNode("Grid/Data");
-
-            int cellsX = int.Parse(dataNode.Attributes.GetNamedItem("CellsX").InnerText);
-            int cellsY = int.Parse(dataNode.Attributes.GetNamedItem("CellsY").InnerText);
-            int cellWidth = int.Parse(dataNode.Attributes.GetNamedItem("CellWidth").InnerText);
-            int cellHeight = int.Parse(dataNode.Attributes.GetNamedItem("CellHeight").InnerText);
-
-            XmlNodeList cellList = xmlDocument.SelectNodes("Grid/Cells/Cell");
-=======
             Button buildBlacksmithButton = CreateButton("Button/buttonBg", 64, 16, "buildBlacksmithsButton", "engineer_action", false, Color.OrangeRed, Color.Black);
             buildBlacksmithButton.AddEventListener(MouseEvent.LEFT_CLICK, BuildBlacksmithButtonClick);
 
@@ -389,46 +289,16 @@ namespace Legend {
         {
 
             Button button = new Button(Content.Load<Texture2D>(textureName), width, height, set);
->>>>>>> Stashed changes
 
             grid = new Grid(cellsX * cellWidth, cellsY * cellHeight, cellsX, cellsY, cellWidth, cellHeight);
 
             grid.Generate();
 
-<<<<<<< Updated upstream
-            pathFinder = new PathFinder(grid);
-=======
             button.AddEventListener(MouseEvent.MOUSE_OVER, OnButtonOver);
             button.AddEventListener(MouseEvent.MOUSE_OUT, OnButtonOut);
->>>>>>> Stashed changes
 
             return button;
 
-<<<<<<< Updated upstream
-        private void DrawMap()
-        {
-
-            foreach (KeyValuePair<int[],Cell> kvp in grid.Cells)
-            {
-
-                Sprite sprite = new Sprite(Content.Load<Texture2D>("gravel"), kvp.Value.Width, kvp.Value.Height);
-                sprite.X = kvp.Value.GridX * kvp.Value.Width;
-                sprite.Y = kvp.Value.GridY * kvp.Value.Height;
-                displayList.AddWorldSprite(sprite);
-
-                sprite.AddEventListener(MouseEvent.LEFT_CLICK, OnClick);
-
-            }
-
-        }
-
-        private void CreatePlayer()
-        {
-
-            Sprite sprite = new Sprite(Content.Load<Texture2D>("player"),32 , 32);
-
-            player = new Player(sprite);
-=======
         }
         /*
          * Button click listeners start
@@ -560,28 +430,9 @@ namespace Legend {
             {
 
                 Debug.WriteLine("No camps exist, cant set home");
->>>>>>> Stashed changes
 
-            player.Sprite.X = 32 * 2;
-            player.Sprite.Y = 32 * 2;
+            }
 
-<<<<<<< Updated upstream
-            displayList.AddWorldSprite(sprite);
-
-        }
-
-        private void CreateEnemy()
-        {
-
-            Sprite sprite = new Sprite(Content.Load<Texture2D>("enemy"), 32 , 32 );
-
-            enemy = new Enemy(sprite);
-
-            enemy.Sprite.X = 32 * 14;
-            enemy.Sprite.Y = 32 * 14;
-
-            displayList.AddWorldSprite(sprite);
-=======
         }
         private void PassTurnButtonClick(MouseEvent e)
         {
@@ -604,7 +455,6 @@ namespace Legend {
                 TurnManager.StartGlobalTurn();
 
             }
->>>>>>> Stashed changes
 
         }
         private void CloseMenuButtonClick(MouseEvent e)
@@ -612,14 +462,6 @@ namespace Legend {
 
             HideUnitMenu();
 
-<<<<<<< Updated upstream
-        private void CreateTurnManager()
-        {
-
-            turnManager = new TurnManager();
-            turnManager.AddUnitToTurnList(player);
-            turnManager.AddUnitToTurnList(enemy);
-=======
         }
         private void OnButtonOver(MouseEvent e)
         {
@@ -630,7 +472,6 @@ namespace Legend {
         }
         private void OnButtonOut(MouseEvent e)
         {
->>>>>>> Stashed changes
 
             turnManager.ActiveUnit = player;
 
@@ -638,16 +479,6 @@ namespace Legend {
         private void HideUnitMenu()
         {
 
-<<<<<<< Updated upstream
-                if (!player.IsMoving && player == turnManager.ActiveUnit)
-                {
-
-                    //pick new path
-                    List<Cell> path = pathFinder.BreadthFirstSearch(grid.GetCellByXY(player.Sprite.X / grid.CellWidth, player.Sprite.Y / grid.CellHeight), grid.GetCellByXY((int)(e.MousePosition.X / grid.CellWidth), (int)(e.MousePosition.Y / grid.CellHeight)));
-
-                    player.PrepForMovememnt(path);
-                    player.TurnStarted = true;
-=======
             for (int i = 0; i < activeButtons.Count; i++)
             {
 
@@ -669,12 +500,9 @@ namespace Legend {
 
                 activeButtons[i].ScreenX = (int)screenPosition.X + unit.GameSprite.Width + 1;
                 activeButtons[i].ScreenY = (int)screenPosition.Y + (i * activeButtons[i].Height);
->>>>>>> Stashed changes
 
             }
 
-<<<<<<< Updated upstream
-=======
         }
         /*
          * Button click listeners end
@@ -731,19 +559,14 @@ namespace Legend {
 
             }
 
->>>>>>> Stashed changes
         }
         private void OnTileRightClick(MouseEvent e)
         {
 
-<<<<<<< Updated upstream
-        protected override void Update(GameTime gameTime)
-=======
             Renderer.Camera.Target = (GameSprite)e.Target;
 
         }
         private List<Button> GetButtons(string unitSpecificSetName, string setName)
->>>>>>> Stashed changes
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -765,11 +588,6 @@ namespace Legend {
 
             }
 
-<<<<<<< Updated upstream
-            //displayList.Camera.LookAt(new Vector2(player.Sprite.X, player.Sprite.Y));
-
-            mi.Update(displayList);
-=======
             activeButtons.Add(closeButton);
 
             return activeButtons;
@@ -844,23 +662,17 @@ namespace Legend {
 
             MouseInputManager.Update(screenPosition);
             UnitManager.Update(gameTime);
->>>>>>> Stashed changes
             base.Update(gameTime);
 
         }
         protected override void Draw(GameTime gameTime)
         {
-<<<<<<< Updated upstream
-          
-            displayList.Render();
-=======
            
             Renderer.ClearScreen();
             Renderer.DrawGame();
             Renderer.DrawUi();
             
 
->>>>>>> Stashed changes
             base.Draw(gameTime);
 
         }
