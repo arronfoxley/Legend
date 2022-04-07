@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Terrain xmlns="https://www.w3schools.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Forest>   
+    <Resource CellX="4" CellY="0" Type="Wood" TextureID="10"/>
+    <Resource CellX="5" CellY="0" Type="Wood" TextureID="11"/>
+    <Resource CellX="6" CellY="0" Type="Wood" TextureID="12"/>
+    <Resource CellX="4" CellY="1" Type="Wood" TextureID="13"/>
+    <Resource CellX="5" CellY="1" Type="Wood" TextureID="14"/>
+    <Resource CellX="6" CellY="1" Type="Wood" TextureID="15"/>
+    <Resource CellX="4" CellY="2" Type="Wood" TextureID="16"/>
+    <Resource CellX="5" CellY="2" Type="Wood" TextureID="17"/>
+    <Resource CellX="6" CellY="2" Type="Wood" TextureID="18"/>
+  </Forest>
+  <Forest>
+    <Resource CellX="4" CellY="8" Type="Wood" TextureID="10"/>
+    <Resource CellX="5" CellY="8" Type="Wood" TextureID="11"/>
+    <Resource CellX="6" CellY="8" Type="Wood" TextureID="12"/>
+    <Resource CellX="4" CellY="9" Type="Wood" TextureID="13"/>
+    <Resource CellX="5" CellY="9" Type="Wood" TextureID="14"/>
+    <Resource CellX="6" CellY="9" Type="Wood" TextureID="15"/>
+    <Resource CellX="4" CellY="10" Type="Wood" TextureID="16"/>
+    <Resource CellX="5" CellY="10" Type="Wood" TextureID="17"/>
+    <Resource CellX="6" CellY="10" Type="Wood" TextureID="18"/>
+  </Forest>
+  <Forest>
+    <Resource CellX="8" CellY="0" Type="Wood" TextureID="10"/>
+    <Resource CellX="9" CellY="0" Type="Wood" TextureID="11"/>
+    <Resource CellX="10" CellY="0" Type="Wood" TextureID="12"/>
+    <Resource CellX="8" CellY="1" Type="Wood" TextureID="13"/>
+    <Resource CellX="9" CellY="1" Type="Wood" TextureID="14"/>
+    <Resource CellX="10" CellY="1" Type="Wood" TextureID="15"/>
+    <Resource CellX="8" CellY="2" Type="Wood" TextureID="16"/>
+    <Resource CellX="9" CellY="2" Type="Wood" TextureID="17"/>
+    <Resource CellX="10" CellY="2" Type="Wood" TextureID="18"/>
+  </Forest>
+  <Forest>
+    <Resource CellX="8" CellY="4" Type="Wood" TextureID="10"/>
+    <Resource CellX="9" CellY="4" Type="Wood" TextureID="11"/>
+    <Resource CellX="10" CellY="4" Type="Wood" TextureID="12"/>
+    <Resource CellX="8" CellY="5" Type="Wood" TextureID="13"/>
+    <Resource CellX="9" CellY="5" Type="Wood" TextureID="14"/>
+    <Resource CellX="10" CellY="5" Type="Wood" TextureID="15"/>
+    <Resource CellX="8" CellY="6" Type="Wood" TextureID="16"/>
+    <Resource CellX="9" CellY="6" Type="Wood" TextureID="17"/>
+    <Resource CellX="10" CellY="6" Type="Wood" TextureID="18"/>
+  </Forest>
+  <Forest>
+    <Resource CellX="8" CellY="8" Type="Wood" TextureID="10"/>
+    <Resource CellX="9" CellY="8" Type="Wood" TextureID="11"/>
+    <Resource CellX="10" CellY="8" Type="Wood" TextureID="12"/>
+    <Resource CellX="8" CellY="9" Type="Wood" TextureID="13"/>
+    <Resource CellX="9" CellY="9" Type="Wood" TextureID="14"/>
+    <Resource CellX="10" CellY="9" Type="Wood" TextureID="15"/>
+    <Resource CellX="8" CellY="10" Type="Wood" TextureID="16"/>
+    <Resource CellX="9" CellY="10" Type="Wood" TextureID="17"/>
+    <Resource CellX="10" CellY="10" Type="Wood" TextureID="18"/>
+  </Forest>
+  <Mountain>
+    <Resource CellX="4" CellY="4" Type="Mountain" TextureID="19" IsPassable="False"/>
+    <Resource CellX="5" CellY="4" Type="Mountain" TextureID="20" IsPassable="False"/>
+    <Resource CellX="6" CellY="4" Type="Mountain" TextureID="21" IsPassable="False" ShadowTextureID="28"/>
+    <Resource CellX="4" CellY="5" Type="Mountain" TextureID="22" IsPassable="False"/>
+    <Resource CellX="5" CellY="5" Type="Mountain" TextureID="23" IsPassable="False"/>
+    <Resource CellX="6" CellY="5" Type="Mountain" TextureID="24" IsPassable="False" ShadowTextureID="29"/>
+    <Resource CellX="4" CellY="6" Type="Mountain" TextureID="25" IsPassable="False"/>
+    <Resource CellX="5" CellY="6" Type="Mountain" TextureID="26" IsPassable="False"/>
+    <Resource CellX="6" CellY="6" Type="Mountain" TextureID="27" IsPassable="False" ShadowTextureID="30"/>
+  </Mountain>
+  <Ore>
+    <Resource CellX="3" CellY="4" Type="Ore" TextureID="31" />
+    <Resource CellX="3" CellY="5" Type="Ore" TextureID="32" />
+    <Resource CellX="3" CellY="6" Type="Ore" TextureID="33" />
+    <Resource CellX="7" CellY="4" Type="Ore" TextureID="31" />
+    <Resource CellX="7" CellY="5" Type="Ore" TextureID="32" />
+    <Resource CellX="7" CellY="6" Type="Ore" TextureID="33" />
+    <Resource CellX="4" CellY="3" Type="Ore" TextureID="31" />
+    <Resource CellX="5" CellY="3" Type="Ore" TextureID="32" />
+    <Resource CellX="6" CellY="3" Type="Ore" TextureID="33" />
+    <Resource CellX="4" CellY="7" Type="Ore" TextureID="31" />
+    <Resource CellX="5" CellY="7" Type="Ore" TextureID="32" />
+    <Resource CellX="6" CellY="7" Type="Ore" TextureID="33" />
+  </Ore>
+</Terrain>
